@@ -1,22 +1,43 @@
 <template>
-  <div id="container"
-  class="h100">
+  <div class="h100  flex-between">
+
+  <div  id="container">
+
+  </div>
+
+  <div class="list">
+  <list :tableData="tableData"></list>
+
+  </div>
   </div>
 </template>
 
 <script>
 import {_AddIcon,_Maker} from "../utils/map"
+import list from '../components/list'
 export default {
+  components : {
+    list
+  },
   data() {
     return {
-      map: {}
+      map: {},
+      tableData : []
     };
   },
+  created() {
+           this.int();
+  },
   mounted() {      
-      this.int();
+
+          this.newMap ();
   },
   methods: {
-       int () {
+    
+    int () {
+
+    },
+       intMap () {
           
         //   初始化地图
         this.newMap ();
@@ -31,6 +52,7 @@ export default {
       },
     
     newMap() {
+        console.log("地图实例化")
       this.map = new AMap.Map("container", {
         zoom: 13,
         center: [116.45, 39.93],
@@ -41,4 +63,13 @@ export default {
 };
 </script>
 <style  scoped>
+
+#container {
+  height: 100%;
+  width: 80%;
+}
+.list {
+  height: 100%;
+  width: 20%;
+}
 </style>

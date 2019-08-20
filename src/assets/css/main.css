@@ -7,10 +7,7 @@ li,
 dl,
 dt,
 dd,
-tbody,
-th,
-td,
-thead,
+
 
 
 S {
@@ -82,4 +79,10 @@ body {
 }
 .h95 {
     height: 95%;
+}
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    align-items: center;
 }
