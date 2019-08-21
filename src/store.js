@@ -5,19 +5,20 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    committee: "", //居委
-    community: "", //小区
+    community_id: "", //居委
+    community_block_id: "", //小区
+    isIndependence: true //社区小区是否关联
   },
   mutations: {
-    setCommittee(state, {
-      committee
+    setCommitte(state, {
+      community_id
     }) {
-      state.committee = committee;
+      state.community_id = community_id;
     },
     SetCommunity(state, {
-      community
+      community_block_id
     }) {
-      state.committee = community;
+      state.community_block_id = community_block_id;
     },
   },
   actions: {

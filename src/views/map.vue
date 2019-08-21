@@ -6,7 +6,11 @@
     </div>
 
     <div class="list">
-      <list :tableData="tableData"></list>
+      <list
+        :tableData="tableData"
+        :total="total"
+        @page="pageFn"
+      ></list>
 
     </div>
   </div>
@@ -15,6 +19,8 @@
 <script>
 import { _AddIcon, _Maker } from "../utils/map";
 import { getTableList } from "../api/api";
+import { mapState } from "vuex";
+
 import list from "../components/list";
 export default {
   components: {
@@ -23,8 +29,29 @@ export default {
   data() {
     return {
       map: {},
-      tableData: []
+      tableData: [],
+      data: "",
+      total: 0,
+      pam: {
+        community_id: "",
+        community_block_id: "",
+        elevator_situation: "",
+        search_key: "",
+        paginate: "",
+        page: 1
+      }
     };
+  },
+  // watch: {
+  //   community_id: this.tableTarget,
+  //   community_block_id: this.tableTarget
+  // },
+  computed: {
+    ...mapState({
+      community_id: state => state.community_id,
+      community_block_id: state => state.community_block_id,
+      isIndependence: state => state.isIndependence
+    })
   },
   created() {
     this.int();
@@ -59,17 +86,56 @@ export default {
       });
     },
 
-    //获取列表
+    //根据头部筛选变换
+
+    tableTarget() {
+      if (this.isIndependence && this.community_id && this.community_block_id) {
+        this.pam.community_id = this.community_id;
+        this.pam.community_block_id = this.community_block_id;
+        this.getTableData();
+      } else {
+        this.pam.community_id = this.community_id;
+        this.pam.community_block_id = this.community_block_id;
+        this.getTableData();
+      }
+    },
+
+    //获取列表 |核心请求
     async getTableData() {
-      let pam = {
-        community_id: "",
-        community_block_id: "",
-        elevator_situation: "",
-        search_key: "",
-        paginate: ""
-      };
-      let res = await getTableList(pam);
+      let res = await getTableList(this.pam);
       this.tableData = res.data.data;
+      this.data = res.data.data;
+      let tmp = this.total;
+      if (tmp == res.data.total) return;
+      this.total = res.data.total;
+    },
+
+    // 翻页
+    pageFn(e, page) {
+      switch (e) {
+        case "prev": {
+          this.pam.page = this.data.from = 1 ? 1 : this.data.from - 1;
+          this.getTableData();
+          break;
+        }
+        case "next": {
+          this.pam.page =
+            this.data.from == this.data.last_page
+              ? this.data.last_page
+              : this.data.from + 1;
+          this.getTableData();
+          break;
+        }
+        case "current": {
+          this.pam.page = page;
+          this.getTableData();
+          break;
+        }
+
+        default: {
+          break;
+        }
+      }
     }
   }
 };

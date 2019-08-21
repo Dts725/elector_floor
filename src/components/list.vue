@@ -27,7 +27,12 @@
       <el-pagination
         small
         layout="prev, pager, next"
-        :total="50"
+        :total="total"
+        :page-size="20"
+        hide-on-single-page
+        @prev-click="prevFn"
+        @next-click="nextFn"
+        @current-change="current"
       >
       </el-pagination>
     </div>
@@ -41,11 +46,31 @@ export default {
     tableData: {
       type: Array,
       default: []
+    },
+    total: {
+      type: Number,
+      default: 0
     }
   },
 
   data() {
     return {};
+  },
+  methods: {
+    // 上一页
+    prevFn() {
+      this.$emit("page", "prev");
+    },
+
+    // 下一页
+    nextFn() {
+      this.$emit("page", "next");
+    },
+
+    // 当前页
+    current(e) {
+      this.$emit("page", "current", e);
+    }
   }
 };
 </script>
