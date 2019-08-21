@@ -93,8 +93,7 @@ export default {
     },
 
     elevctorImg(index) {
-      let status = index || 1;
-
+      // let status = index || 1;
       // return new Promise((resolve, rej) => {
       //   elevatorList.forEach(el => {
       //     if (el.type == status) {
