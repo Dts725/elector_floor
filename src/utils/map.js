@@ -46,5 +46,66 @@ export class _Maker {
     }
 
 }
+//海量点样式
+
+export const _MapStyle = [
+    {
+        url: require('../static/icon/icon_map01.png'),
+        anchor: new AMap.Pixel(38,49),
+        size: new AMap.Size(38,49)
+    },
+    {
+        url: require('../static/icon/icon_map02.png'),
+        anchor: new AMap.Pixel(38,49),
+        size: new AMap.Size(38,49)
+    },
+    {
+        url: require('../static/icon/icon_map03.png'),
+        anchor: new AMap.Pixel(38,49),
+        size: new AMap.Size(38,49)
+    },
+    {
+        url: require('../static/icon/icon_map04.png'),
+        anchor: new AMap.Pixel(38,49),
+        size: new AMap.Size(38,49)
+    },
+    {
+        url: require('../static/icon/icon_map05.png'),
+        anchor: new AMap.Pixel(38,49),
+        size: new AMap.Size(38,49)
+    },
+]
 
 // 创建海量点
+
+export class _MoreMass {
+    constructor ({data,map,style}){
+        this.data = data
+        this.map = map
+        this.style = style
+    } 
+    create () {
+        let mass = this.mass();
+        let marker = this.maker()
+       mass.setMap(this.map)
+       mass.on('mouseover', function (e) {
+
+        marker.setPosition(e.data.lnglat);
+        marker.setLabel({content: e.data.name})
+    });
+        
+    }
+    mass() {
+   
+
+        return  new AMap.MassMarks(this.data, {
+            opacity: 0.8,
+            zIndex: 111,
+            cursor: 'pointer',
+            style: this.style
+        });
+    }
+    maker() {
+        return new AMap.Marker({content: ' ', map: this.map});
+    }
+} 

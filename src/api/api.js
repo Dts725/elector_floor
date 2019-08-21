@@ -36,5 +36,5 @@ export function headerCity(pam) {
 }
 //非关联小区树查看
 export function headerCityNoe(pam) {
-    return get('admin/elevator/community_block', pam)
+    return get('/admin/elevator/community_block', pam)
 }

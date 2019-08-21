@@ -5,10 +5,11 @@
 
     </div>
 
-    <div class="list">
+    <div class="list" :style="{height: bodyHeight + 'px'}">
       <list
         :tableData="tableData"
         :total="total"
+        :height="bodyHeight"
         @page="pageFn"
       ></list>
 
@@ -17,9 +18,9 @@
 </template>
 
 <script>
-import { _AddIcon, _Maker } from "../utils/map";
+import { _AddIcon, _Maker,_MoreMass,_MapStyle } from "../utils/map";
 import { getTableList } from "../api/api";
-import { mapState } from "vuex";
+import { mapState,mapGetters } from "vuex";
 
 import list from "../components/list";
 export default {
@@ -31,6 +32,7 @@ export default {
       map: {},
       tableData: [],
       data: "",
+      height : 500, //列表高度
       total: 0,
       pam: {
         community_id: "",
@@ -51,24 +53,35 @@ export default {
       community_id: state => state.community_id,
       community_block_id: state => state.community_block_id,
       isIndependence: state => state.isIndependence
+    }),
+    ...mapGetters({
+      bodyHeight :'bodyHeight'
     })
   },
   created() {
     this.int();
+
   },
   mounted() {
     this.newMap();
   },
   methods: {
-    int() {
-      this.getTableData();
+//设置页面高度
+
+   
+
+   async int() {
+    await  this.getTableData();
+    this.morePoint(this.tableData,this.map,_MapStyle);
     },
+
+    //单个带你加载
     intMap() {
       //   初始化地图
       this.newMap();
       // 创建icon
       let icon = new _AddIcon({
-        uri: require("../assets/icon/icon_map01.png")
+        uri: require("../static/icon/icon_map01.png")
       }).createIcorn();
       //添加到maker
       let marker = new _Maker({ lng: 116.45, lat: 39.93, icon: icon }).maker();
@@ -77,19 +90,38 @@ export default {
       // console.log(this.map)
     },
 
+    //海量带你加载
+  async  morePoint(tmpData,map,style) {
+      let data = this.dataInt(tmpData)
+
+      new _MoreMass({data,map,style}).create();
+    },
+dataInt(data) {
+  return  data.map((el,index) => {
+      return {
+        lnglat :[el.east_longitude,el.north_latitude],
+        name :el.community_block_name,
+        id :index,
+        style :el.elevator_situation-1
+
+      }
+    })
+},
     newMap() {
       console.log("地图实例化");
       this.map = new AMap.Map("container", {
         zoom: 13,
-        center: [116.45, 39.93],
-        resizeEnable: true
+        center: [121.398773,31.030892],
+        resizeEnable: true,
+        mapStyle :'amap://styles/8804968b584dd7b545f9b6f945c9ee84' 
       });
     },
 
     //根据头部筛选变换
 
+// 开发隐藏需求 有需要改变配置即可
     tableTarget() {
-      console.log(this.community_id, this.community_block_id, "防区ID");
+
       if (this.isIndependence) {
         if (this.community_id && this.community_block_id) {
           this.pam.community_id = this.community_id;
@@ -149,7 +181,8 @@ export default {
   width: 80%;
 }
 .list {
-  height: 100%;
-  width: 20%;
+
+  width: 40%;
+  overflow: auto;
 }
 </style>

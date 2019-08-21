@@ -1,44 +1,15 @@
 <template>
-  <div
-    class="list"
-    style="width: 100%"
-  >
-    <el-table
-      :data="tableData"
-      stripe
-      style="width: 100%"
-    >
-      <el-table-column
-        type="index"
-        label="序号"
-        width="50"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="community_name"
-        label="居委"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="community_block_name"
-        label="小区"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="building_address"
-        label="地址"
-      >
-      </el-table-column>
-
+  <div class="list-table" style="width: 100%;">
+    <el-table :data="tableData" stripe :height="height-50" style="width: 100%">
+      <el-table-column type="index" label="序号"  :index="indexMethod" width="50"></el-table-column>
+      <el-table-column v-for="(el ,index) in  tableTitle" :key='index' :prop="el[0]" :label="el[1]" ></el-table-column>
       <el-table-column label="状态">
         <template v-slot="scope">
-          <img
-            :src="elevctorImg( scope.row.elevator_numbers)"
-            alt=""
-          >
+          <!-- <img src="../assets/icon/icon01.png" alt=""> -->
+          <img width="25" height="25" :src="elevctorImg(scope.row.elevator_situation)" alt="电梯状态" />
+   
         </template>
       </el-table-column>
-
     </el-table>
 
     <div class="page-int">
@@ -46,21 +17,18 @@
         small
         layout="prev, pager, next"
         :total="total"
-        :page-size="20"
+        :page-size="pageSize"
         hide-on-single-page
         @prev-click="prevFn"
         @next-click="nextFn"
         @current-change="current"
-      >
-      </el-pagination>
+      ></el-pagination>
     </div>
-
   </div>
 </template>
 <script>
 import { elevatorList } from "../utils/config";
-import { promises } from "dns";
-import { Promise } from "q";
+
 export default {
   props: {
     tableData: {
@@ -70,13 +38,30 @@ export default {
     total: {
       type: Number,
       default: 0
+    },
+    height: {
+      type: Number,
+      default: 0
     }
   },
 
   data() {
-    return {};
+    return {
+      pageSize : 20,
+      currentPage : 1,
+      tableTitle :[
+        ['community_name','居委'],
+        ['community_block_name','小区'],
+        ['building_address','地址'],
+      ]
+    };
   },
   methods: {
+
+indexMethod (index) {
+  return index + (this.currentPage-1)*this.pageSize +1
+},
+
     // 上一页
     prevFn() {
       this.$emit("page", "prev");
@@ -90,23 +75,54 @@ export default {
     // 当前页
     current(e) {
       this.$emit("page", "current", e);
+      this.currentPage = e
     },
 
+
     elevctorImg(index) {
-      // let status = index || 1;
-      // return new Promise((resolve, rej) => {
-      //   elevatorList.forEach(el => {
-      //     if (el.type == status) {
-      //       resolve(`require(${el.src})`);
-      //     }
-      //   });
-      // });
-    }
+      let src = "";
+      let tmpIndex = index || 1;
+      
+      // return '../assets/icon/icon01.png'
+    
+
+        switch (tmpIndex) {
+          case 1 : {
+            return require('../static/icon/icon01.png')
+            break;
+          }
+          case 2 : {
+            return require('../static/icon/icon02.png')
+            break;
+          }
+          case 3 : {
+            return require('../static/icon/icon03.png')
+            break;
+          }
+          case 4 : {
+            return require('../static/icon/icon04.png')
+            break;
+          }
+          case 5 : {
+            return require('../static/icon/icon05.png')
+            break;
+          }
+          default  : {
+            return '../static/icon/icon01.png'
+          break;
+
+          }
+        }
+
+      }
+    
+   
+  
   }
 };
 </script>
 <style scoped>
 .page-int {
-  margin-top: 1em;
+  margin-top: 10px;
 }
 </style>
