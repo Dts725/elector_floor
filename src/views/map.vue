@@ -42,10 +42,10 @@ export default {
       }
     };
   },
-  // watch: {
-  //   community_id: this.tableTarget,
-  //   community_block_id: this.tableTarget
-  // },
+  watch: {
+    community_id: "tableTarget",
+    community_block_id: "tableTarget"
+  },
   computed: {
     ...mapState({
       community_id: state => state.community_id,
@@ -89,10 +89,13 @@ export default {
     //根据头部筛选变换
 
     tableTarget() {
-      if (this.isIndependence && this.community_id && this.community_block_id) {
-        this.pam.community_id = this.community_id;
-        this.pam.community_block_id = this.community_block_id;
-        this.getTableData();
+      console.log(this.community_id, this.community_block_id, "防区ID");
+      if (this.isIndependence) {
+        if (this.community_id && this.community_block_id) {
+          this.pam.community_id = this.community_id;
+          this.pam.community_block_id = this.community_block_id;
+          this.getTableData();
+        }
       } else {
         this.pam.community_id = this.community_id;
         this.pam.community_block_id = this.community_block_id;

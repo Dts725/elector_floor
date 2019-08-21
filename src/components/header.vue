@@ -56,9 +56,9 @@
           >
             <el-option
               v-for="item in options1"
-              :key="item.id"
+              :key="item.community_block_id"
               :label="item.community_block_name"
-              :value="item.id"
+              :value="item.community_block_id"
             >
             </el-option>
           </el-select>
@@ -103,24 +103,29 @@ export default {
       if (this.isIndependence) return;
       let res = await headerCityNoe({ search_key: query });
       this.options1 = res.data.data;
-      this.loading = false;
 
-      console.log(res.data.data);
+      this.value = "";
+      this.options = [];
+
+      this.$store.commit("setCommitte", { community_id: "" });
+
+      this.loading = false;
     },
 
     change1(value) {
-      this.$store.commit("SetCommunity", { community_id: value });
+      this.$store.commit("setCommunity", { community_block_id: value });
     },
     change(value) {
       this.value1 = "";
-      this.$store.commit("setCommitte", { community_block_id: value });
-      if (this.isIndependence) {
-        this.options.forEach(el => {
-          if (value == el.community_id) {
-            this.options1 = el.community_blocks;
-          }
-        });
-      }
+      this.$store.commit("setCommunity", { community_block_id: "" });
+
+      this.$store.commit("setCommitte", { community_id: value });
+
+      this.options.forEach(el => {
+        if (value == el.community_id) {
+          this.options1 = el.community_blocks;
+        }
+      });
     }
   }
 };
