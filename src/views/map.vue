@@ -96,8 +96,16 @@ export default {
     },
 
     //点击设置地图中心点二
-    setCenter(lanlat) {
-      this.map.setZoomAndCenter(18, lanlat);
+    setCenter(lnglat) {
+      console.log(lnglat)
+      if(!lnglat[0] || !lnglat[1]) {
+            this.$message({
+          type: "warning",
+          message: "地址缺少经纬度信息 请检查 ！"
+        });
+        return 
+      }
+      this.map.setZoomAndCenter(18, lnglat);
     },
 
     //列表按钮 地图跟随转换
@@ -179,14 +187,25 @@ export default {
 
     //数据格式处理
     dataInt(data) {
-      return data.map((el, index) => {
-        return {
+let list = data.map((el, index,array) => {
+        console.log(el.building_east_longitude, el.building_north_latitude)
+
+        if(el.building_east_longitude && el.building_north_latitude) {
+          return {
           lnglat: [el.building_east_longitude, el.building_north_latitude],
           name: el.building_address,
           id: index,
           style: el.elevator_situation - 1
         };
+        }
+
       });
+  
+    return list.filter(d => {
+      if (d && d !== 'null') {
+        return d
+      }
+    })
     },
     newMap() {
       console.log("地图实例化");
