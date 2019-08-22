@@ -23,8 +23,28 @@ S {
     src: url("../font/Alibaba-PuHuiTi-Medium.ttf")
 }
 
+.color-icon {
+    color: #D7221A;
+    font-size: 25px;
+    font-weight: 700;
+
+}
+
+@font-face {
+    font-family: 'iconfont';
+    /* project id 1365166 */
+    src: url('//at.alicdn.com/t/font_1365166_ckm47x0k0j.eot');
+    src: url('//at.alicdn.com/t/font_1365166_ckm47x0k0j.eot?#iefix') format('embedded-opentype'),
+        url('//at.alicdn.com/t/font_1365166_ckm47x0k0j.woff2') format('woff2'),
+        url('//at.alicdn.com/t/font_1365166_ckm47x0k0j.woff') format('woff'),
+        url('//at.alicdn.com/t/font_1365166_ckm47x0k0j.ttf') format('truetype'),
+        url('//at.alicdn.com/t/font_1365166_ckm47x0k0j.svg#iconfont') format('svg');
+}
+
+
 html {
-    font-family: "ali", "Avenir",
+    font-family: "ali",
+        "iconfont",
         Helvetica,
         Arial,
         sans-serif;
@@ -40,7 +60,9 @@ body {
     height: 100%;
 }
 
-
+.cur {
+    cursor: pointer;
+}
 
 .h100 {
     height: 100%;

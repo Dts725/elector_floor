@@ -7,12 +7,28 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [{
-    path: '/',
-    name: 'map',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import('./views/map.vue')
-  }]
+  routes: [
+
+    {
+      path: '/',
+      component: () => import("./App.vue"),
+      children: [{
+          path: '/',
+          name: 'map',
+          // route level code-splitting
+          // this generates a separate chunk (about.[hash].js) for this route
+          // which is lazy-loaded when the route is visited.
+          component: () => import('./views/map.vue')
+        },
+
+      ]
+
+    },
+
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('./login.vue')
+    }
+  ]
 })

@@ -3,7 +3,14 @@ axios.defaults.baseURL = 'https://apijcdj.shyunhua.com';
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
-
+// 添加响应拦截器
+axios.interceptors.response.use(function (response) {
+    // 对响应数据做点什么
+    return response;
+}, function (error) {
+    // 对响应错误做点什么
+    return Promise.reject(error);
+});
 async function get(url, pam) {
 
     let res = await axios.get(url, {
@@ -12,15 +19,15 @@ async function get(url, pam) {
     return res.data
 }
 async function post(url, pam) {
-    let res = await axios.get(url, pam)
+    let res = await axios.post(url, pam)
     return res.data
 }
 async function deletes(url, pam) {
-    let res = await axios.get(url, pam)
+    let res = await axios.delete(url, pam)
     return res.data
 }
 async function put(url, pam) {
-    let res = await axios.get(url, pam)
+    let res = await axios.put(url, pam)
     return res.data
 }
 
@@ -37,4 +44,16 @@ export function headerCity(pam) {
 //非关联小区树查看
 export function headerCityNoe(pam) {
     return get('/admin/elevator/community_block', pam)
+}
+
+//登录接口 
+export function loginFn(pam, type) {
+
+    if (type === 'post') {
+        return post('/admin/system/login', pam)
+    } else {
+        return get('/admin/system/login_type_list', pam)
+
+    }
+
 }

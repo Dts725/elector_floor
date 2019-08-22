@@ -5,11 +5,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    topHeight : 60,//头部高度默认值
-    clientHeight : 600,//头部一下高度默认值
+    topHeight: 60, //头部高度默认值
+    clientHeight: 600, //头部一下高度默认值
     community_id: "", //居委
     community_block_id: "", //小区
-    isIndependence: true //社区小区是否关联 及 是否允许全局搜索小区 默认 关联不允许搜索
+    isIndependence: true, //社区小区是否关联 及 是否允许全局搜索小区 默认 关联不允许搜索
+    loginInfo: "" //
   },
   mutations: {
     setCommitte(state, {
@@ -22,19 +23,24 @@ export default new Vuex.Store({
     }) {
       state.community_block_id = community_block_id;
     },
- 
+
     setClientHeight(state, {
       clientHeight
     }) {
       state.clientHeight = clientHeight;
     },
- 
+    setLoginInfo(state, {
+      loginInfo
+    }) {
+      state.loginInfo = JSON.parse(loginInfo);
+    },
+
   },
 
-  
-  getters : {
+
+  getters: {
     //计算头部一下的高度
-    bodyHeight : state => {
+    bodyHeight: state => {
       return state.clientHeight - state.topHeight
     }
   },
