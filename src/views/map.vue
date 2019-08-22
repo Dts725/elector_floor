@@ -181,7 +181,7 @@ export default {
     dataInt(data) {
       return data.map((el, index) => {
         return {
-          lnglat: [el.east_longitude, el.north_latitude],
+          lnglat: [el.building_east_longitude, el.building_north_latitude],
           name: el.building_address,
           id: index,
           style: el.elevator_situation - 1
