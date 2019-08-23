@@ -6,7 +6,7 @@
 
     <div class="ipt">
       <el-input
-        placeholder="请输入内容"
+        placeholder="请输入地址"
         v-model="iptValue"
         suffix-icon="el-icon-search color-icon "
         @change="remoteMethod"
@@ -117,7 +117,7 @@ export default {
 
     //地图设置试点
     setCenter(row) {
-      let lngLat = [row.east_longitude, row.north_latitude];
+      let lngLat = [row.building_east_longitude, row.building_north_latitude];
 
       this.$emit("setCenter", lngLat);
     },

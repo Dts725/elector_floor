@@ -95,9 +95,11 @@ export default {
       let pam = {
         search_key: value
       };
+      this.$refs.listTable.$emit("clearValue");
+
       this.moreMassStatic.clear();
       await this.getTableData(pam);
-      this.$refs.listTable.$emit("clearValue");
+
       this.morePoint(this.tableData, this.map, _MapStyle);
     },
 
@@ -161,7 +163,7 @@ export default {
 
     //海量点局部加载
     async morePoint(tmpData, map, style) {
-      let data = this.dataInt(tmpData);
+      let data = await this.dataInt(tmpData);
 
       this.moreMassStatic = new _MoreMass({ data, map, style }).create();
     },
@@ -169,7 +171,6 @@ export default {
     //加载全部海量点
     async morePointAll(tmpData, map, style) {
       let data = await this.dataInt(tmpData);
-      console.log(data, "处理后的数据");
 
       this.moreMassStatic = new _MoreMass({ data, map, style }).create();
     },

@@ -2,7 +2,7 @@ module.exports = {
     productionSourceMap: false,
     assetsDir: '',
     outputDir: 'floor_map',
-    publicPath: './',
+    publicPath: '/floor_map/',
 
     devServer: {
         port: 8081,
@@ -18,4 +18,6 @@ module.exports = {
     },
 
     lintOnSave: false
+
+
 }
