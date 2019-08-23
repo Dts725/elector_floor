@@ -169,6 +169,8 @@ export default {
     //加载全部海量点
     async morePointAll(tmpData, map, style) {
       let data = await this.dataInt(tmpData);
+      console.log(data, "处理后的数据");
+
       this.moreMassStatic = new _MoreMass({ data, map, style }).create();
     },
     //获取所有数据
@@ -217,6 +219,7 @@ export default {
           }
         })
       );
+
       return list;
     },
     newMap() {
