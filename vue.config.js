@@ -2,7 +2,7 @@ module.exports = {
     productionSourceMap: false,
     assetsDir: '',
     outputDir: 'floor_map',
-    baseUrl: './',
+    publicPath: './',
 
     devServer: {
         port: 8081,
