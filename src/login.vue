@@ -1,5 +1,8 @@
 <template>
-  <div class="login">
+  <div
+    class="login"
+    @keyup.enter="login"
+  >
     <p class="htop">电梯地图管理登录</p>
 
     <div class="tip">
@@ -34,7 +37,7 @@
         type="primary"
         class="w100"
         @click="login"
-      >主要按钮</el-button>
+      >登录</el-button>
     </div>
   </div>
 </template>
@@ -71,11 +74,11 @@ export default {
           type: "success",
           message: "登录成功"
         });
-     
+
         // this.$store.commit("setLoginInfo", res.data);
-      
+
         window.localStorage.setItem("loginInfo", JSON.stringify(res.data));
-        this.$router.push("/");
+        this.$router.push("/index/map");
       } else {
         this.$message({
           type: "error",

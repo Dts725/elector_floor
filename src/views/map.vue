@@ -32,7 +32,13 @@
 </template>
 
 <script>
-import { _AddIcon, _Maker, _MoreMass, _MapStyle } from "../utils/map";
+import {
+  _AddIcon,
+  _Maker,
+  _MoreMass,
+  _MapStyle,
+  _ConvertFrom
+} from "../utils/map";
 import { getTableList } from "../api/api";
 import { mapState, mapGetters } from "vuex";
 
@@ -96,16 +102,16 @@ export default {
     },
 
     //点击设置地图中心点二
-    setCenter(lnglat) {
-      console.log(lnglat)
-      if(!lnglat[0] || !lnglat[1]) {
-            this.$message({
+    async setCenter(lnglat) {
+      if (!lnglat[0] || !lnglat[1]) {
+        this.$message({
           type: "warning",
           message: "地址缺少经纬度信息 请检查 ！"
         });
-        return 
+        return;
       }
-      this.map.setZoomAndCenter(18, lnglat);
+      let lngLats = await new _ConvertFrom().translate(lnglat);
+      this.map.setZoomAndCenter(18, lngLats);
     },
 
     //列表按钮 地图跟随转换
@@ -186,26 +192,32 @@ export default {
     },
 
     //数据格式处理
-    dataInt(data) {
-let list = data.map((el, index,array) => {
-        console.log(el.building_east_longitude, el.building_north_latitude)
+    async dataInt(data) {
+      let list = data.map(async (el, index, array) => {
+        if (el.building_east_longitude && el.building_north_latitude) {
+          let lnglat = await new _ConvertFrom().translate([
+            el.building_east_longitude,
+            el.building_north_latitude
+          ]);
+          // 坐标转换
 
-        if(el.building_east_longitude && el.building_north_latitude) {
           return {
-          lnglat: [el.building_east_longitude, el.building_north_latitude],
-          name: el.building_address,
-          id: index,
-          style: el.elevator_situation - 1
-        };
+            lnglat: lnglat,
+            name: el.building_address,
+            id: index,
+            style: el.elevator_situation - 1
+          };
         }
-
       });
-  
-    return list.filter(d => {
-      if (d && d !== 'null') {
-        return d
-      }
-    })
+
+      list = Promise.all(
+        list.filter(d => {
+          if (d && d !== "null") {
+            return d;
+          }
+        })
+      );
+      return list;
     },
     newMap() {
       console.log("地图实例化");

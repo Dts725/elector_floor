@@ -9,14 +9,15 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
 
+
     {
-      path: '/',
+      path: '/index',
 
       component: () => import("./App.vue"),
       children: [{
-          path: '/',
+          path: '/index/map',
           name: 'map',
-      
+
           component: () => import('./views/map.vue')
         },
 
@@ -25,7 +26,7 @@ export default new Router({
     },
 
     {
-      path: '/login',
+      path: '/',
       name: 'login',
       component: () => import('./login.vue')
     }

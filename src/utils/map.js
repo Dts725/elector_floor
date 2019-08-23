@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 export class _AddIcon {
     constructor({
         width = 38,
@@ -84,8 +86,10 @@ export class _MoreMass {
     constructor({
         data,
         map,
-        style
+        style,
+
     }) {
+
         this.data = data
         this.map = map
         this.style = style
@@ -117,7 +121,11 @@ export class _MoreMass {
     }
     //海量点实例化
     mass() {
-        return new AMap.MassMarks(this.data, {
+        // 坐标转换
+        // let lnglat = super.translate(this.data);
+        let lnglat = this.data
+
+        return new AMap.MassMarks(lnglat, {
             opacity: 0.8,
             zIndex: 111,
             cursor: 'pointer',
@@ -162,5 +170,33 @@ export class _MoreMass {
 
 
         });
+    }
+
+}
+export class _ConvertFrom {
+
+    constructor() {
+
+        this.style = 'baidu'
+    }
+
+    translate(lnglat) {
+
+
+        return new Promise(resolve => {
+            AMap.convertFrom(lnglat, 'baidu', (status, result) => {
+                if (result.info === 'ok') {
+
+
+                    let res = result.locations
+
+
+                    resolve([res[0].lng, res[0].lat]) // Array.<LngLat>
+                }
+            })
+        })
+
+
+
     }
 }

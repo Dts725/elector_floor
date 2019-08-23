@@ -20,7 +20,6 @@
       @cell-click="setCenter"
       style="width: 100%"
       header-cell-class-name="header-title-list"
-    
     >
       <el-table-column
         type="index"
