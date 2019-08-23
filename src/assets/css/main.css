@@ -29,6 +29,19 @@ S {
     font-weight: 700;
 
 }
+.header-title-list {
+   color: #fff;
+   text-align: center !important;
+   background-color: #FF6E01 !important;
+  }
+  .el-table .cell {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    white-space: normal;
+    word-break: break-all;
+    line-height: 23px;
+    text-align: center;
+  }
 
 @font-face {
     font-family: 'iconfont';

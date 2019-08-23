@@ -6,6 +6,7 @@
       justify="space-between"
       align="middle"
       type="flex"
+    
       class="h100"
     >
       <el-col
@@ -175,4 +176,5 @@ export default {
   width: 20%;
   transform: translateY(-50%);
 }
+
 </style>
