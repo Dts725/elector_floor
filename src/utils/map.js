@@ -100,6 +100,12 @@ export class _MoreMass {
         this.stateLite(this.map)
         let mass = this.mass();
         let marker = this.maker()
+        // console.log(marker, '测试')
+        // this.setViewCenter({
+        //     map: this.map,
+        //     ArrayMarker: [marker]
+        // })
+
         mass.setMap(this.map)
         mass.on('mouseover', function (e) {
 
@@ -153,6 +159,16 @@ export class _MoreMass {
         });
     }
 
+
+    //设置覆盖物集合在事业中点
+
+    setViewCenter({
+        map,
+        ArrayMarker
+    }) {
+        map.setFitView(ArrayMarker);
+    }
+
     //添加地图插件
     addControl(map) {
 
@@ -198,5 +214,34 @@ export class _ConvertFrom {
 
 
 
+    }
+
+
+}
+
+//标注信息框
+export class _InfoWindow {
+
+    constructor({
+        position = "middle-left",
+        address,
+        map,
+        lnglat,
+    }) {
+        this.position = position
+        this.address = address
+        this.map = map
+        this.lnglat = lnglat
+    }
+    // 设置信息窗
+    infoWindow() {
+        return new AMap.InfoWindow({
+            anchor: this.position,
+            content: this.address,
+        });
+    }
+    open() {
+        console.log(this.position, this.map, this.lnglat)
+        return this.infoWindow().open(this.map, this.lnglat);
     }
 }

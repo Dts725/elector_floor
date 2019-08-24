@@ -37,7 +37,8 @@ import {
   _Maker,
   _MoreMass,
   _MapStyle,
-  _ConvertFrom
+  _ConvertFrom,
+  _InfoWindow
 } from "../utils/map";
 import { getTableList } from "../api/api";
 import { mapState, mapGetters } from "vuex";
@@ -92,19 +93,18 @@ export default {
   methods: {
     //远程搜索  默认全局搜索
     async searchFn(value) {
-      let pam = {
-        search_key: value
-      };
+      this.pam.search_key = value;
       this.$refs.listTable.$emit("clearValue");
 
       this.moreMassStatic.clear();
-      await this.getTableData(pam);
+      await this.getTableData(this.pam);
+      this.pam.search_key = "";
 
       this.morePoint(this.tableData, this.map, _MapStyle);
     },
 
     //点击设置地图中心点二
-    async setCenter(lnglat) {
+    async setCenter(lnglat, address) {
       if (!lnglat[0] || !lnglat[1]) {
         this.$message({
           type: "warning",
@@ -113,6 +113,13 @@ export default {
         return;
       }
       let lngLats = await new _ConvertFrom().translate(lnglat);
+      // 原型中带有方法
+      new _InfoWindow({
+        address: address,
+        map: this.map,
+        lnglat: lngLats
+      }).open();
+      // new _ConvertFrom({ position: "bottom-left", content: address });
       this.map.setZoomAndCenter(18, lngLats);
     },
 
@@ -120,6 +127,7 @@ export default {
     async btnTable(value) {
       this.moreMassStatic.clear();
       if (value === "all") {
+        this.pam.elevator_situation = "";
         await this.getTableData(this.pam);
         //此处根据需求 是否需要全部地图点做修改 放开注释既可以
 

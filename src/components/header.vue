@@ -6,7 +6,6 @@
       justify="space-between"
       align="middle"
       type="flex"
-    
       class="h100"
     >
       <el-col
@@ -57,6 +56,7 @@
           @change="change1"
           :loading="loadingCity"
           placeholder="请选择小区"
+          :disabled="!options1.length"
           :remote="!isIndependence"
           :remote-method="community"
         >
@@ -93,7 +93,9 @@ export default {
       loginInfo: state => state.loginInfo
     })
   },
-
+  created() {
+    this.city();
+  },
   methods: {
     //登出
     loginOut() {
@@ -176,5 +178,4 @@ export default {
   width: 20%;
   transform: translateY(-50%);
 }
-
 </style>

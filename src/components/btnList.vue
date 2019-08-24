@@ -8,7 +8,7 @@
         class="lis"
         :style="{'background-color':el.color}"
       >
-        <p>
+        <p class="disabled">
           {{el.title}}</p>
       </li>
     </ul>
@@ -28,6 +28,11 @@ export default {
           title: "可安装",
           value: "1",
           color: "#FFA102"
+        },
+        {
+          title: "创造条件可安装",
+          value: "7",
+          color: "#F43EF2"
         },
 
         {
@@ -49,13 +54,19 @@ export default {
   },
   methods: {
     btnFn(value) {
-      //   for (let i = 0; i < event.path[2].children.length; i++) {
-      //     event.path[2].children[i].style.fontSize = "1rem";
-      //     event.target.style.fontSize = "1.5rem";
-      //   }
-      //   event.path[2].children.forEach(el => {
-      //     el.target.style.fontSize = "1em";
-      //   });
+      console.log(event);
+      this.$nextTick(el => {
+        for (let i = 0; i < event.path[1].children.length; i++) {
+          event.path[1].children[i].style.transform = "translateX(0)";
+          event.path[1].children[i].style.width = "40px";
+        }
+        event.path[0].style.transform = "translateX(-10px)";
+        event.path[0].style.width = "50px";
+      });
+
+      // event.path[2].children.forEach(el => {
+      //   el.target.style.width = "50px";
+      // });
       this.$emit("emitParent", value);
     }
   }
@@ -67,7 +78,7 @@ export default {
 }
 
 .lis {
-  height: 8em;
+  height: 10em;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -79,5 +90,10 @@ export default {
   color: #fff;
   font-size: 1rem;
   cursor: pointer;
+}
+.disabled {
+  pointer-events: none;
+  cursor: default;
+  opacity: 1;
 }
 </style>

@@ -118,8 +118,8 @@ export default {
     //地图设置试点
     setCenter(row) {
       let lngLat = [row.building_east_longitude, row.building_north_latitude];
-
-      this.$emit("setCenter", lngLat);
+      console.log(row);
+      this.$emit("setCenter", lngLat, row.building_address);
     },
 
     // 上一页
