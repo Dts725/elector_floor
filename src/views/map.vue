@@ -1,24 +1,16 @@
 <template>
-  <div class="h100  flex-between">
+  <div class="h100 flex-between">
     <!-- 地图 -->
-    <div id="container">
-
-    </div>
+    <div id="container"></div>
     <!-- 菜单按钮 -->
     <div class="btn-list">
-      <btn-list @emitParent="btnTable">
-
-      </btn-list>
+      <btn-list @emitParent="btnTable"></btn-list>
     </div>
 
     <!-- 列表展示 -->
-    <div
-      class="list"
-      :style="{height: bodyHeight + 'px'}"
-    >
-
+    <div class="list" :style="{height: bodyHeight + 'px'}">
       <list
-        ref='listTable'
+        ref="listTable"
         :tableData="tableData"
         :total="total"
         :height="bodyHeight"
@@ -26,7 +18,6 @@
         @setCenter="setCenter"
         @searchFn="searchFn"
       ></list>
-
     </div>
   </div>
 </template>
@@ -179,7 +170,7 @@ export default {
     //加载全部海量点
     async morePointAll(tmpData, map, style) {
       let data = await this.dataInt(tmpData);
-
+      data = data.filter(d => d);
       this.moreMassStatic = new _MoreMass({ data, map, style }).create();
     },
     //获取所有数据
@@ -204,9 +195,11 @@ export default {
 
     //数据格式处理
     async dataInt(data) {
-      let list = data.map(async (el, index, array) => {
+      return  Promise.all(data.map(async (el, index, array) => {
+        let lnglat = "";
+
         if (el.building_east_longitude && el.building_north_latitude) {
-          let lnglat = await new _ConvertFrom().translate([
+          lnglat = await new _ConvertFrom().translate([
             el.building_east_longitude,
             el.building_north_latitude
           ]);
@@ -218,18 +211,10 @@ export default {
             id: index,
             style: el.elevator_situation - 1
           };
+        } else {
+          return false;
         }
-      });
-
-      list = Promise.all(
-        list.filter(d => {
-          if (d && d !== "null") {
-            return d;
-          }
-        })
-      );
-
-      return list;
+      }));
     },
     newMap() {
       console.log("地图实例化");

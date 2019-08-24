@@ -78,7 +78,7 @@ export default {
 }
 
 .lis {
-  height: 10em;
+  min-height: 6em;
   width: 100%;
   display: flex;
   justify-content: center;
