@@ -100,7 +100,7 @@ export default {
     //登出
     loginOut() {
       window.localStorage.removeItem("loginInfo");
-      this.$router.push("/login");
+      this.$router.push("/");
     },
 
     // 关联 社区

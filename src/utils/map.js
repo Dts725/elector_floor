@@ -238,10 +238,15 @@ export class _InfoWindow {
         return new AMap.InfoWindow({
             anchor: this.position,
             content: this.address,
+            offset: new AMap.Pixel(0, -35)
         });
     }
     open() {
         console.log(this.position, this.map, this.lnglat)
         return this.infoWindow().open(this.map, this.lnglat);
     }
+    close() {
+
+    }
+
 }

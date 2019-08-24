@@ -7,7 +7,7 @@
 
     <div class="tip">
 
-      <el-select
+      <!-- <el-select
         v-model="value"
         placeholder="请选择"
         class="w100"
@@ -20,7 +20,7 @@
           :value="item.type"
         >
         </el-option>
-      </el-select>
+      </el-select> -->
       <el-input
         v-model="name"
         class="w100"
@@ -53,20 +53,20 @@ export default {
     };
   },
   created() {
-    this.getSelector();
+    // this.getSelector();
   },
   methods: {
-    async getSelector() {
-      let res = await loginFn();
-      this.options = res.data;
-      console.log(res.data);
-    },
+    // async getSelector() {
+    //   let res = await loginFn();
+    //   this.options = res.data;
+    //   console.log(res.data);
+    // },
 
     async login() {
       let pam = {
         name: this.name,
         password: this.pwd,
-        type: this.value
+        type: 1
       };
       let res = await loginFn(pam, "post");
       if (res.code == 0) {
