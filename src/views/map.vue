@@ -8,7 +8,10 @@
     </div>
 
     <!-- 列表展示 -->
-    <div class="list" :style="{height: bodyHeight + 'px'}">
+    <div
+      class="list"
+      :style="{height: bodyHeight + 'px'}"
+    >
       <list
         ref="listTable"
         :tableData="tableData"
@@ -46,7 +49,8 @@ export default {
       map: {},
       moreMassStatic: "",
       tableData: [],
-
+      tmpBtn: "", //上次查看便签分类
+      InfoWindow: null,
       data: "",
       height: 500, //列表高度
       total: 0,
@@ -116,28 +120,25 @@ export default {
 
     //列表按钮 地图跟随转换
     async btnTable(value) {
+      // 清除海量点
+      _InfoWindow.close();
+      if (value === this.tmpBtn) return;
+      this.tmpBtn = value;
       this.moreMassStatic.clear();
       if (value === "all") {
         this.pam.elevator_situation = "";
         await this.getTableData(this.pam);
-        //此处根据需求 是否需要全部地图点做修改 放开注释既可以
-
-        // this.morePoint(this.tableData, this.map, _MapStyle);
         await this.getDataAll();
         this.morePointAll(this.dataAll, this.map, _MapStyle);
       } else {
         this.pam.elevator_situation = value;
         await this.getTableData(this.pam);
-        //此处根据需求做修改 放开注释既可以
-        // this.morePoint(this.tableData, this.map, _MapStyle);
-
         await this.getDataAll();
         this.morePointAll(this.dataAll, this.map, _MapStyle);
       }
     },
 
     //设置页面高度
-
     async int() {
       await this.getTableData(this.pam);
       await this.getDataAll();
@@ -195,26 +196,28 @@ export default {
 
     //数据格式处理
     async dataInt(data) {
-      return  Promise.all(data.map(async (el, index, array) => {
-        let lnglat = "";
+      return Promise.all(
+        data.map(async (el, index, array) => {
+          let lnglat = "";
 
-        if (el.building_east_longitude && el.building_north_latitude) {
-          lnglat = await new _ConvertFrom().translate([
-            el.building_east_longitude,
-            el.building_north_latitude
-          ]);
-          // 坐标转换
+          if (el.building_east_longitude && el.building_north_latitude) {
+            lnglat = await new _ConvertFrom().translate([
+              el.building_east_longitude,
+              el.building_north_latitude
+            ]);
+            // 坐标转换
 
-          return {
-            lnglat: lnglat,
-            name: el.building_address,
-            id: index,
-            style: el.elevator_situation - 1
-          };
-        } else {
-          return false;
-        }
-      }));
+            return {
+              lnglat: lnglat,
+              name: el.building_address,
+              id: index,
+              style: el.elevator_situation - 1
+            };
+          } else {
+            return false;
+          }
+        })
+      );
     },
     newMap() {
       console.log("地图实例化");

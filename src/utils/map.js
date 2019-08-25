@@ -150,6 +150,7 @@ export class _MoreMass {
     clear() {
         console.log("报错没有这方法")
         this.mass().clear();
+
     }
 
     // 卫星地图
@@ -221,17 +222,19 @@ export class _ConvertFrom {
 
 //标注信息框
 export class _InfoWindow {
-
+    static infoBody = null
     constructor({
         position = "middle-left",
         address,
         map,
         lnglat,
+
     }) {
         this.position = position
         this.address = address
         this.map = map
         this.lnglat = lnglat
+
     }
     // 设置信息窗
     infoWindow() {
@@ -242,11 +245,14 @@ export class _InfoWindow {
         });
     }
     open() {
-        console.log(this.position, this.map, this.lnglat)
-        return this.infoWindow().open(this.map, this.lnglat);
+        _InfoWindow.infoBody = this.infoWindow();
+        return _InfoWindow.infoBody.open(this.map, this.lnglat);
     }
-    close() {
 
+    //打开的实体
+    static close() {
+
+        _InfoWindow.infoBody.close()
     }
 
 }

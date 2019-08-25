@@ -52,9 +52,9 @@ export default {
       ]
     };
   },
+
   methods: {
     btnFn(value) {
-      console.log(event);
       this.$nextTick(el => {
         for (let i = 0; i < event.path[1].children.length; i++) {
           event.path[1].children[i].style.transform = "translateX(0)";
@@ -96,5 +96,9 @@ export default {
   pointer-events: none;
   cursor: default;
   opacity: 1;
+}
+.lis:nth-of-type(1) {
+  width: 50px;
+  transform: translateX(-10px);
 }
 </style>

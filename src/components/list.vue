@@ -92,6 +92,7 @@ export default {
     return {
       pageSize: 20,
       currentPage: 1,
+      clickTmp: "",
       iptValue: "",
       tableTitle: [
         ["community_block_name", "小区"],
@@ -117,8 +118,11 @@ export default {
 
     //地图设置试点
     setCenter(row) {
+      // 阻止多次点击
+      if (row.id === this.clickTmp) return;
+      this.clickTmp = row.id;
       let lngLat = [row.building_east_longitude, row.building_north_latitude];
-      console.log(row);
+
       this.$emit("setCenter", lngLat, row.building_address);
     },
 
