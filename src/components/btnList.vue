@@ -30,7 +30,7 @@ export default {
           color: "#FFA102"
         },
         {
-          title: "创造条件可安装",
+          title: "可创造条件可安装",
           value: "7",
           color: "#F43EF2"
         },
