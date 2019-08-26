@@ -47,6 +47,8 @@ export default {
   data() {
     return {
       map: {},
+
+      isClickTarg: false, //地图是否弹出过小标签
       moreMassStatic: "",
       tableData: [],
       tmpBtn: "", //上次查看便签分类
@@ -114,6 +116,7 @@ export default {
         map: this.map,
         lnglat: lngLats
       }).open();
+      this.isClickTarg = true;
       // new _ConvertFrom({ position: "bottom-left", content: address });
       this.map.setZoomAndCenter(18, lngLats);
     },
@@ -121,7 +124,10 @@ export default {
     //列表按钮 地图跟随转换
     async btnTable(value) {
       // 清除海量点
-      _InfoWindow.close();
+
+      if (this.isClickTarg) {
+        _InfoWindow.close();
+      }
       if (value === this.tmpBtn) return;
       this.tmpBtn = value;
       this.moreMassStatic.clear();
