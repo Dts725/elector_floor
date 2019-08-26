@@ -198,20 +198,49 @@ export default {
     async dataInt(data) {
       return Promise.all(
         data.map(async (el, index, array) => {
-          let lnglat = "";
+          let lnglat = "",
+            styleIndex = 0;
 
           if (el.building_east_longitude && el.building_north_latitude) {
             lnglat = await new _ConvertFrom().translate([
               el.building_east_longitude,
               el.building_north_latitude
             ]);
-            // 坐标转换
+            // 修改映射关系
+
+            switch (el.elevator_situation) {
+              case 1: {
+                styleIndex = 1;
+                break;
+              }
+              case 3: {
+                styleIndex = 2;
+                break;
+              }
+              case 4: {
+                styleIndex = 3;
+                break;
+              }
+              case 5: {
+                styleIndex = 0;
+                break;
+              }
+              case 7: {
+                styleIndex = 4;
+                break;
+              }
+
+              default: {
+                styleIndex = el.elevator_situation - 1;
+                break;
+              }
+            }
 
             return {
               lnglat: lnglat,
               name: el.building_address,
               id: index,
-              style: el.elevator_situation - 1
+              style: styleIndex
             };
           } else {
             return false;

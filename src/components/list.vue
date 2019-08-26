@@ -155,7 +155,7 @@ export default {
           break;
         }
 
-        case 2: {
+        case 7: {
           return require("../static/icon/icon05.png");
           break;
         }
@@ -171,6 +171,7 @@ export default {
           return require("../static/icon/icon01.png");
           break;
         }
+
         default: {
           return "../static/icon/icon05.png";
           break;

@@ -53,13 +53,16 @@ export class _Maker {
 }
 //海量点样式
 
-export const _MapStyle = [{
-        url: require('../static/icon/icon_map02.png'),
+
+export const _MapStyle = [
+
+    {
+        url: require('../static/icon/icon_map01.png'),
         anchor: new AMap.Pixel(38, 49),
         size: new AMap.Size(38, 49)
     },
     {
-        url: require('../static/icon/icon_map05.png'),
+        url: require('../static/icon/icon_map02.png'),
         anchor: new AMap.Pixel(38, 49),
         size: new AMap.Size(38, 49)
     },
@@ -74,7 +77,7 @@ export const _MapStyle = [{
         size: new AMap.Size(38, 49)
     },
     {
-        url: require('../static/icon/icon_map01.png'),
+        url: require('../static/icon/icon_map05.png'),
         anchor: new AMap.Pixel(38, 49),
         size: new AMap.Size(38, 49)
     },
@@ -191,6 +194,7 @@ export class _MoreMass {
 
 }
 export class _ConvertFrom {
+    // static gender = new AMap.Geocoder()
 
     constructor() {
 
@@ -218,7 +222,23 @@ export class _ConvertFrom {
     }
 
 
+    // // 地址解析
+    // static geocoder(address) {
+    //     console.log("执行测试001")
+
+    //     return new Promise(resolve => {
+    //         console.log("执行测试")
+    //         _ConvertFrom.gender.getLocation(address, res => {
+    //             console.log("执行测试001")
+
+    //             resolve(res)
+    //         })
+    //     })
+    // }
 }
+
+
+
 
 //标注信息框
 export class _InfoWindow {
