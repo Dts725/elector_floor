@@ -18,10 +18,10 @@ S {
     box-sizing: border-box;
 }
 
-@font-face {
+/* @font-face {
     font-family: 'ali';
     src: url("../font/Alibaba-PuHuiTi-Medium.ttf")
-}
+} */
 
 .color-icon {
     color: #D7221A;
