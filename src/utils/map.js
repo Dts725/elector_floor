@@ -87,6 +87,7 @@ export const _MapStyle = [
 // 创建海量点
 
 export class _MoreMass {
+    static massLocal = null
     constructor({
         data,
         map,
@@ -105,14 +106,14 @@ export class _MoreMass {
      
         //  设置卫星地图
         // this.stateLite(this.map)
-        let mass = this.mass();
-        
+        // let mass = 
+        _MoreMass.massLocal = this.mass();
 
         let marker = this.maker()
         // 关闭信息框
 
-        mass.setMap(this.map)
-        mass.on('mouseover', function (e) {
+        _MoreMass.massLocal.setMap(this.map)
+        _MoreMass.massLocal.on('mouseover', function (e) {
       
 
             marker.setPosition(e.data.lnglat);
@@ -120,7 +121,7 @@ export class _MoreMass {
                 content: e.data.name
             })
         });
-        mass.on('mouseout', function (e) {
+        _MoreMass.massLocal.on('mouseout', function (e) {
 
             marker.setPosition(e.data.lnglat);
             marker.setLabel({
@@ -128,7 +129,7 @@ export class _MoreMass {
             })
         });
         //此处返回 保证全局只有一个map   实例
-        return mass
+        return _MoreMass.massLocal
 
     }
     //海量点实例化
@@ -153,11 +154,11 @@ export class _MoreMass {
         });
     }
     // //清空海量点
-    // clear() {
-   
-    //     this.mass().clear();
+  static  _clear() {
+    
+        _MoreMass.massLocal.clear()
 
-    // }
+    }
 
     // 卫星地图
     stateLite(map) {

@@ -46,7 +46,7 @@ export default {
     return {
       map: {},
       isClickInfo: false,
-      moreMassStatic: "",
+    
       tableData: [],
       tmpBtn: "", //上次查看便签分类
       InfoWindow: null,
@@ -90,7 +90,7 @@ export default {
       this.pam.search_key = value;
       this.$refs.listTable.$emit("clearValue");
 
-       this.moreMassStatic.clear();
+       _MoreMass._clear();
       await this.getTableData(this.pam);
       this.pam.search_key = "";
 
@@ -101,7 +101,7 @@ export default {
     async setCenter(lnglat, address, flag) {
       this.isClickInfo = true;
       // 注册关闭信息窗
-      this.moreMassStatic.on("mouseover", function() {
+      _MoreMass.massLocal.on("mouseover", function() {
         _InfoWindow.close();
       });
       let lngLats = "";
@@ -129,9 +129,9 @@ export default {
       }
       // 清除海量点
       if (value === this.tmpBtn) return;
-      this.map.setZoom(13);
       this.tmpBtn = value;
-       this.moreMassStatic.clear();
+      this.map.setZoom(12);
+       _MoreMass._clear();
       if (value === "all") {
         this.pam.elevator_situation = "";
         await this.getTableData(this.pam);
@@ -157,14 +157,14 @@ export default {
     async morePoint(tmpData, map, style) {
       let data = await this.dataInt(tmpData);
 
-      this.moreMassStatic = new _MoreMass({ data, map, style }).create();
+     new _MoreMass({ data, map, style }).create();
     },
 
     //加载全部海量点
     async morePointAll(tmpData, map, style) {
       let data = await this.dataInt(tmpData);
 
-      this.moreMassStatic = new _MoreMass({ data, map, style }).create();
+      await new _MoreMass({ data, map, style }).create();
     },
     //获取所有数据
     async getDataAll() {
@@ -244,7 +244,7 @@ export default {
     newMap() {
       console.log("地图实例化");
       this.map = new AMap.Map("container", {
-        zoom: 13,
+        zoom: 12,
         center: [121.398773, 31.030892],
         resizeEnable: true,
         mapStyle: "amap://styles/8804968b584dd7b545f9b6f945c9ee84"
@@ -259,7 +259,7 @@ export default {
       this.pam.community_id = this.community_id;
       this.pam.community_block_id = this.community_block_id;
       await this.getTableData(this.pam);
-       this.moreMassStatic.clear();
+       _MoreMass._clear();
       await this.getDataAll();
       this.morePointAll(this.dataAll, this.map, _MapStyle);
     },

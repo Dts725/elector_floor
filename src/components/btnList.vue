@@ -67,7 +67,7 @@ export default {
       // event.path[2].children.forEach(el => {
       //   el.target.style.width = "50px";
       // });
-      this.$emit("emitParent", value);
+      this.$emit("emitParent", value); 
     }
   }
 };
