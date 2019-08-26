@@ -101,15 +101,14 @@ export default {
     },
 
     //点击设置地图中心点二
-    async setCenter(lnglat, address) {
-      if (!lnglat[0] || !lnglat[1]) {
-        this.$message({
-          type: "warning",
-          message: "地址缺少经纬度信息 请检查 ！"
-        });
-        return;
+    async setCenter(lnglat, address, flag) {
+      let lngLats = "";
+      if (flag) {
+        lngLats = await new _ConvertFrom().translate(lnglat);
+      } else {
+        lngLats = lnglat;
       }
-      let lngLats = await new _ConvertFrom().translate(lnglat);
+
       // 原型中带有方法
       new _InfoWindow({
         address: address,
@@ -129,6 +128,7 @@ export default {
         _InfoWindow.close();
       }
       if (value === this.tmpBtn) return;
+      this.map.setZoom(13);
       this.tmpBtn = value;
       this.moreMassStatic.clear();
       if (value === "all") {
@@ -152,20 +152,20 @@ export default {
       this.morePointAll(this.dataAll, this.map, _MapStyle);
     },
 
-    //单个带你加载
-    intMap() {
-      //   初始化地图
-      this.newMap();
-      // 创建icon
-      let icon = new _AddIcon({
-        uri: require("../static/icon/icon_map01.png")
-      }).createIcorn();
-      //添加到maker
-      let marker = new _Maker({ lng: 116.45, lat: 39.93, icon: icon }).maker();
-      let marker1 = new _Maker({ lng: 116.48, lat: 39.93, icon: icon }).maker();
-      this.map.add([marker, marker1]);
-      // console.log(this.map)
-    },
+    // //单个带你加载
+    // intMap() {
+    //   //   初始化地图
+    //   this.newMap();
+    //   // 创建icon
+    //   let icon = new _AddIcon({
+    //     uri: require("../static/icon/icon_map01.png")
+    //   }).createIcorn();
+    //   //添加到maker
+    //   let marker = new _Maker({ lng: 116.45, lat: 39.93, icon: icon }).maker();
+    //   let marker1 = new _Maker({ lng: 116.48, lat: 39.93, icon: icon }).maker();
+    //   this.map.add([marker, marker1]);
+    //   // console.log(this.map)
+    // },
 
     //海量点局部加载
     async morePoint(tmpData, map, style) {
@@ -177,7 +177,7 @@ export default {
     //加载全部海量点
     async morePointAll(tmpData, map, style) {
       let data = await this.dataInt(tmpData);
-      data = data.filter(d => d);
+
       this.moreMassStatic = new _MoreMass({ data, map, style }).create();
     },
     //获取所有数据
@@ -212,45 +212,46 @@ export default {
               el.building_east_longitude,
               el.building_north_latitude
             ]);
-            // 修改映射关系
+          } else {
+            let res = await _ConvertFrom.geocoder(el.building_address);
+            lnglat = [res[0].location.lng, res[0].location.lat];
+          }
 
-            switch (el.elevator_situation) {
-              case 1: {
-                styleIndex = 1;
-                break;
-              }
-              case 3: {
-                styleIndex = 2;
-                break;
-              }
-              case 4: {
-                styleIndex = 3;
-                break;
-              }
-              case 5: {
-                styleIndex = 0;
-                break;
-              }
-              case 7: {
-                styleIndex = 4;
-                break;
-              }
-
-              default: {
-                styleIndex = el.elevator_situation - 1;
-                break;
-              }
+          // 状态 elevator_situation 映射 图片
+          switch (el.elevator_situation) {
+            case 1: {
+              styleIndex = 1;
+              break;
+            }
+            case 3: {
+              styleIndex = 2;
+              break;
+            }
+            case 4: {
+              styleIndex = 3;
+              break;
+            }
+            case 5: {
+              styleIndex = 0;
+              break;
+            }
+            case 7: {
+              styleIndex = 4;
+              break;
             }
 
-            return {
-              lnglat: lnglat,
-              name: el.building_address,
-              id: index,
-              style: styleIndex
-            };
-          } else {
-            return false;
+            default: {
+              styleIndex = 4;
+              break;
+            }
           }
+
+          return {
+            lnglat: lnglat,
+            name: el.building_address,
+            id: index,
+            style: styleIndex
+          };
         })
       );
     },

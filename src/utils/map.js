@@ -1,5 +1,6 @@
 const _ = require('lodash');
 
+
 export class _AddIcon {
     constructor({
         width = 38,
@@ -193,9 +194,8 @@ export class _MoreMass {
     }
 
 }
-export class _ConvertFrom {
-    // static gender = new AMap.Geocoder()
 
+export class _ConvertFrom {
     constructor() {
 
         this.style = 'baidu'
@@ -222,19 +222,26 @@ export class _ConvertFrom {
     }
 
 
-    // // 地址解析
-    // static geocoder(address) {
-    //     console.log("执行测试001")
+    // // 地址解析 ?748febfb54bc8a9ccdd0aa0c4203fd28
+    static geocoder(address) {
 
-    //     return new Promise(resolve => {
-    //         console.log("执行测试")
-    //         _ConvertFrom.gender.getLocation(address, res => {
-    //             console.log("执行测试001")
 
-    //             resolve(res)
-    //         })
-    //     })
-    // }
+        return new Promise(resolve => {
+            AMap.service("AMap.Geocoder", function () {
+                var geocoder = new AMap.Geocoder({
+                    radius: 1000,
+                    extensions: "all",
+                    city: "021"
+                });
+                geocoder.getLocation(address, function (status, result) {
+                    if (status === "complete" && result.info === "OK") {
+
+                        resolve(result.geocodes)
+                    }
+                });
+            });
+        })
+    }
 }
 
 

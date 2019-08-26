@@ -65,7 +65,7 @@
   </div>
 </template>
 <script>
-import { elevatorList } from "../utils/config";
+import { _ConvertFrom } from "../utils/map.js";
 
 export default {
   props: {
@@ -117,13 +117,21 @@ export default {
     },
 
     //地图设置试点
-    setCenter(row) {
+    async setCenter(row) {
       // 阻止多次点击
+      let flag = true;
+      let lngLat = "";
       if (row.id === this.clickTmp) return;
       this.clickTmp = row.id;
-      let lngLat = [row.building_east_longitude, row.building_north_latitude];
+      if (!row.building_east_longitude || !row.building_north_latitude) {
+        flag = false;
+        let res = await _ConvertFrom.geocoder(row.building_address);
+        lngLat = [res[0].location.lng, res[0].location.lat];
+      } else {
+        lngLat = [row.building_east_longitude, row.building_north_latitude];
+      }
 
-      this.$emit("setCenter", lngLat, row.building_address);
+      this.$emit("setCenter", lngLat, row.building_address, flag);
     },
 
     // 上一页
