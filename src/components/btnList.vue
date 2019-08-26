@@ -30,7 +30,7 @@ export default {
           color: "#FFA102"
         },
         {
-          title: "创造条件可安装",
+          title: "可创造条件安装",
           value: "7",
           color: "#F43EF2"
         },
@@ -52,16 +52,16 @@ export default {
       ]
     };
   },
+
   methods: {
     btnFn(value) {
-      console.log(event);
       this.$nextTick(el => {
         for (let i = 0; i < event.path[1].children.length; i++) {
           event.path[1].children[i].style.transform = "translateX(0)";
-          event.path[1].children[i].style.width = "40px";
+          event.path[1].children[i].style.width = "30px";
         }
         event.path[0].style.transform = "translateX(-10px)";
-        event.path[0].style.width = "50px";
+        event.path[0].style.width = "40px";
       });
 
       // event.path[2].children.forEach(el => {
@@ -74,12 +74,12 @@ export default {
 </script>
 <style scoped>
 .case {
-  width: 40px;
+  width: 30px;
 }
 
 .lis {
   min-height: 6em;
-  padding: 5px 0;
+  padding: 10px 0;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -89,12 +89,16 @@ export default {
   background-color: red;
   border-radius: 10px 0 0 10px;
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
 }
 .disabled {
   pointer-events: none;
   cursor: default;
   opacity: 1;
+}
+.lis:nth-of-type(1) {
+  width: 40px;
+  transform: translateX(-10px);
 }
 </style>

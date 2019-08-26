@@ -29,7 +29,8 @@ import {
   _MoreMass,
   _MapStyle,
   _ConvertFrom,
-  _InfoWindow
+  _InfoWindow,
+  _AddControl
 } from "../utils/map";
 import { getTableList } from "../api/api";
 import { mapState, mapGetters } from "vuex";
@@ -44,9 +45,11 @@ export default {
   data() {
     return {
       map: {},
+      isClickInfo: false,
       moreMassStatic: "",
       tableData: [],
-
+      tmpBtn: "", //上次查看便签分类
+      InfoWindow: null,
       data: "",
       height: 500, //列表高度
       total: 0,
@@ -87,7 +90,7 @@ export default {
       this.pam.search_key = value;
       this.$refs.listTable.$emit("clearValue");
 
-      this.moreMassStatic.clear();
+       this.moreMassStatic.clear();
       await this.getTableData(this.pam);
       this.pam.search_key = "";
 
@@ -95,69 +98,59 @@ export default {
     },
 
     //点击设置地图中心点二
-    async setCenter(lnglat, address) {
-      if (!lnglat[0] || !lnglat[1]) {
-        this.$message({
-          type: "warning",
-          message: "地址缺少经纬度信息 请检查 ！"
-        });
-        return;
+    async setCenter(lnglat, address, flag) {
+      this.isClickInfo = true;
+      // 注册关闭信息窗
+      this.moreMassStatic.on("mouseover", function() {
+        _InfoWindow.close();
+      });
+      let lngLats = "";
+      if (flag) {
+        lngLats = await new _ConvertFrom().translate(lnglat);
+      } else {
+        lngLats = lnglat;
       }
-      let lngLats = await new _ConvertFrom().translate(lnglat);
+
       // 原型中带有方法
       new _InfoWindow({
         address: address,
         map: this.map,
         lnglat: lngLats
       }).open();
+
       // new _ConvertFrom({ position: "bottom-left", content: address });
       this.map.setZoomAndCenter(18, lngLats);
     },
 
     //列表按钮 地图跟随转换
     async btnTable(value) {
-      this.moreMassStatic.clear();
+      if (this.isClickInfo) {
+        _InfoWindow.close();
+      }
+      // 清除海量点
+      if (value === this.tmpBtn) return;
+      this.map.setZoom(13);
+      this.tmpBtn = value;
+       this.moreMassStatic.clear();
       if (value === "all") {
         this.pam.elevator_situation = "";
         await this.getTableData(this.pam);
-        //此处根据需求 是否需要全部地图点做修改 放开注释既可以
-
-        // this.morePoint(this.tableData, this.map, _MapStyle);
         await this.getDataAll();
         this.morePointAll(this.dataAll, this.map, _MapStyle);
       } else {
         this.pam.elevator_situation = value;
         await this.getTableData(this.pam);
-        //此处根据需求做修改 放开注释既可以
-        // this.morePoint(this.tableData, this.map, _MapStyle);
-
         await this.getDataAll();
         this.morePointAll(this.dataAll, this.map, _MapStyle);
       }
     },
 
     //设置页面高度
-
     async int() {
       await this.getTableData(this.pam);
       await this.getDataAll();
       // this.morePoint(this.tableData, this.map, _MapStyle);
       this.morePointAll(this.dataAll, this.map, _MapStyle);
-    },
-
-    //单个带你加载
-    intMap() {
-      //   初始化地图
-      this.newMap();
-      // 创建icon
-      let icon = new _AddIcon({
-        uri: require("../static/icon/icon_map01.png")
-      }).createIcorn();
-      //添加到maker
-      let marker = new _Maker({ lng: 116.45, lat: 39.93, icon: icon }).maker();
-      let marker1 = new _Maker({ lng: 116.48, lat: 39.93, icon: icon }).maker();
-      this.map.add([marker, marker1]);
-      // console.log(this.map)
     },
 
     //海量点局部加载
@@ -170,7 +163,7 @@ export default {
     //加载全部海量点
     async morePointAll(tmpData, map, style) {
       let data = await this.dataInt(tmpData);
-      data = data.filter(d => d);
+
       this.moreMassStatic = new _MoreMass({ data, map, style }).create();
     },
     //获取所有数据
@@ -195,26 +188,58 @@ export default {
 
     //数据格式处理
     async dataInt(data) {
-      return  Promise.all(data.map(async (el, index, array) => {
-        let lnglat = "";
+      return Promise.all(
+        data.map(async (el, index, array) => {
+          let lnglat = "",
+            styleIndex = 0;
 
-        if (el.building_east_longitude && el.building_north_latitude) {
-          lnglat = await new _ConvertFrom().translate([
-            el.building_east_longitude,
-            el.building_north_latitude
-          ]);
-          // 坐标转换
+          if (el.building_east_longitude && el.building_north_latitude) {
+            lnglat = await new _ConvertFrom().translate([
+              el.building_east_longitude,
+              el.building_north_latitude
+            ]);
+          } else {
+            let res = await _ConvertFrom.geocoder(el.building_address);
+            lnglat = [res[0].location.lng, res[0].location.lat];
+          }
+
+          // 状态 elevator_situation 映射 图片
+          switch (el.elevator_situation) {
+            case 1: {
+              styleIndex = 1;
+              break;
+            }
+            case 3: {
+              styleIndex = 2;
+              break;
+            }
+            case 4: {
+              styleIndex = 3;
+              break;
+            }
+            case 5: {
+              styleIndex = 0;
+              break;
+            }
+            case 7: {
+              styleIndex = 4;
+              break;
+            }
+
+            default: {
+              styleIndex = 4;
+              break;
+            }
+          }
 
           return {
             lnglat: lnglat,
             name: el.building_address,
             id: index,
-            style: el.elevator_situation - 1
+            style: styleIndex
           };
-        } else {
-          return false;
-        }
-      }));
+        })
+      );
     },
     newMap() {
       console.log("地图实例化");
@@ -224,37 +249,19 @@ export default {
         resizeEnable: true,
         mapStyle: "amap://styles/8804968b584dd7b545f9b6f945c9ee84"
       });
+      new _AddControl(this.map).add();
     },
 
     //根据头部筛选变换
 
     // 开发隐藏需求 有需要改变配置即可
     async tableTarget() {
-      if (this.isIndependence) {
-        if (this.community_id && this.community_block_id) {
-          this.pam.community_id = this.community_id;
-          this.pam.community_block_id = this.community_block_id;
-          await this.getTableData(this.pam);
-          this.moreMassStatic.clear();
-          await this.getDataAll();
-          this.morePointAll(this.dataAll, this.map, _MapStyle);
-        } else {
-          this.pam.community_id = this.community_id;
-          this.pam.community_block_id = this.community_block_id;
-          await this.getTableData(this.pam);
-          this.moreMassStatic.clear();
-
-          await this.getDataAll();
-          this.morePointAll(this.dataAll, this.map, _MapStyle);
-        }
-      } else {
-        this.pam.community_id = this.community_id;
-        this.pam.community_block_id = this.community_block_id;
-        this.getTableData(this.pam);
-        await this.moreMassStatic.clear();
-        await this.getDataAll();
-        this.morePointAll(this.dataAll, this.map, _MapStyle);
-      }
+      this.pam.community_id = this.community_id;
+      this.pam.community_block_id = this.community_block_id;
+      await this.getTableData(this.pam);
+       this.moreMassStatic.clear();
+      await this.getDataAll();
+      this.morePointAll(this.dataAll, this.map, _MapStyle);
     },
 
     //获取列表 |核心请求

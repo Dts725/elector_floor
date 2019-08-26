@@ -1,22 +1,26 @@
 import axios from 'axios'
 axios.defaults.baseURL = 'https://apijcdj.shyunhua.com';
 axios.defaults.withCredentials = true;
+import router from '../router'
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 // 添加响应拦截器
 axios.interceptors.response.use(response => {
     // 对响应数据做点什么
-    console.log(response, '拦截器')
+
+
+
 
     if (response.data.code == 213 || response.data.code == 214) {
         this.$message({
             type: "error",
             message: response.status
         });
-
-
-        // this.$router.push('/login')
+        // 登录失败跳转登录页面
+        router.replace({
+            path: '/'
+        })
         return response
 
     }

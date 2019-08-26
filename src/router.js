@@ -18,7 +18,6 @@ export default new Router({
       children: [{
           path: '/index/map',
           name: 'map',
-
           component: () => import('./views/map.vue')
         },
 
@@ -28,6 +27,8 @@ export default new Router({
 
     {
       path: '/',
+      islogin: true,
+
       name: 'login',
       component: () => import('./login.vue')
     }

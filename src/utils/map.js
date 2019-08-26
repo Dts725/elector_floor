@@ -1,5 +1,6 @@
 const _ = require('lodash');
 
+
 export class _AddIcon {
     constructor({
         width = 38,
@@ -53,13 +54,16 @@ export class _Maker {
 }
 //海量点样式
 
-export const _MapStyle = [{
-        url: require('../static/icon/icon_map02.png'),
+
+export const _MapStyle = [
+
+    {
+        url: require('../static/icon/icon_map01.png'),
         anchor: new AMap.Pixel(38, 49),
         size: new AMap.Size(38, 49)
     },
     {
-        url: require('../static/icon/icon_map05.png'),
+        url: require('../static/icon/icon_map02.png'),
         anchor: new AMap.Pixel(38, 49),
         size: new AMap.Size(38, 49)
     },
@@ -74,7 +78,7 @@ export const _MapStyle = [{
         size: new AMap.Size(38, 49)
     },
     {
-        url: require('../static/icon/icon_map01.png'),
+        url: require('../static/icon/icon_map05.png'),
         anchor: new AMap.Pixel(38, 49),
         size: new AMap.Size(38, 49)
     },
@@ -87,27 +91,29 @@ export class _MoreMass {
         data,
         map,
         style,
+    
 
     }) {
 
         this.data = data
         this.map = map
         this.style = style
+      
     }
     //绑定地图实例
     create() {
-        // this.addControl(this.map)
-        this.stateLite(this.map)
+     
+        //  设置卫星地图
+        // this.stateLite(this.map)
         let mass = this.mass();
+        
+
         let marker = this.maker()
-        // console.log(marker, '测试')
-        // this.setViewCenter({
-        //     map: this.map,
-        //     ArrayMarker: [marker]
-        // })
+        // 关闭信息框
 
         mass.setMap(this.map)
         mass.on('mouseover', function (e) {
+      
 
             marker.setPosition(e.data.lnglat);
             marker.setLabel({
@@ -146,11 +152,12 @@ export class _MoreMass {
             map: this.map
         });
     }
-    //清空海量点
-    clear() {
-        console.log("报错没有这方法")
-        this.mass().clear();
-    }
+    // //清空海量点
+    // clear() {
+   
+    //     this.mass().clear();
+
+    // }
 
     // 卫星地图
     stateLite(map) {
@@ -189,8 +196,8 @@ export class _MoreMass {
     }
 
 }
-export class _ConvertFrom {
 
+export class _ConvertFrom {
     constructor() {
 
         this.style = 'baidu'
@@ -217,21 +224,46 @@ export class _ConvertFrom {
     }
 
 
+    // // 地址解析 
+    static geocoder(address) {
+
+
+        return new Promise(resolve => {
+            AMap.service("AMap.Geocoder", function () {
+                var geocoder = new AMap.Geocoder({
+                    radius: 1000,
+                    extensions: "all",
+                    city: "021"
+                });
+                geocoder.getLocation(address, function (status, result) {
+                    if (status === "complete" && result.info === "OK") {
+
+                        resolve(result.geocodes)
+                    }
+                });
+            });
+        })
+    }
 }
+
+
+
 
 //标注信息框
 export class _InfoWindow {
-
+    static infoBody = null
     constructor({
         position = "middle-left",
         address,
         map,
         lnglat,
+
     }) {
         this.position = position
         this.address = address
         this.map = map
         this.lnglat = lnglat
+
     }
     // 设置信息窗
     infoWindow() {
@@ -242,11 +274,49 @@ export class _InfoWindow {
         });
     }
     open() {
-        console.log(this.position, this.map, this.lnglat)
-        return this.infoWindow().open(this.map, this.lnglat);
-    }
-    close() {
-
+        _InfoWindow.infoBody = this.infoWindow();
+        return _InfoWindow.infoBody.open(this.map, this.lnglat);
     }
 
+    //打开的实体
+    static close() {
+
+        _InfoWindow.infoBody.close()
+    }
+
+}
+
+// 添加控件
+
+export class _AddControl {
+    constructor(map) {
+        this.map = map;
+    }
+
+    add() {
+        let map = this.map;
+        AMapUI.loadUI(["control/BasicControl"], function (BasicControl) {
+            //添加一个缩放控件
+            map.addControl(
+                new BasicControl.Zoom({
+                    position: "lt"
+                })
+            );
+
+            //缩放控件，显示Zoom值
+            map.addControl(
+                new BasicControl.Zoom({
+                    position: "lb",
+                    showZoomNum: true
+                })
+            );
+
+            //图层切换控件
+            map.addControl(
+                new BasicControl.LayerSwitcher({
+                    position: "rt"
+                })
+            );
+        });
+    }
 }

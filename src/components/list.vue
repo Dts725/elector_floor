@@ -65,7 +65,7 @@
   </div>
 </template>
 <script>
-import { elevatorList } from "../utils/config";
+import { _ConvertFrom } from "../utils/map.js";
 
 export default {
   props: {
@@ -92,6 +92,7 @@ export default {
     return {
       pageSize: 20,
       currentPage: 1,
+      clickTmp: "",
       iptValue: "",
       tableTitle: [
         ["community_block_name", "小区"],
@@ -116,10 +117,21 @@ export default {
     },
 
     //地图设置试点
-    setCenter(row) {
-      let lngLat = [row.building_east_longitude, row.building_north_latitude];
-      console.log(row);
-      this.$emit("setCenter", lngLat, row.building_address);
+    async setCenter(row) {
+      // 阻止多次点击
+      let flag = true;
+      let lngLat = "";
+      if (row.id === this.clickTmp) return;
+      this.clickTmp = row.id;
+      if (!row.building_east_longitude || !row.building_north_latitude) {
+        flag = false;
+        let res = await _ConvertFrom.geocoder(row.building_address);
+        lngLat = [res[0].location.lng, res[0].location.lat];
+      } else {
+        lngLat = [row.building_east_longitude, row.building_north_latitude];
+      }
+
+      this.$emit("setCenter", lngLat, row.building_address, flag);
     },
 
     // 上一页
@@ -151,7 +163,7 @@ export default {
           break;
         }
 
-        case 2: {
+        case 7: {
           return require("../static/icon/icon05.png");
           break;
         }
@@ -167,6 +179,7 @@ export default {
           return require("../static/icon/icon01.png");
           break;
         }
+
         default: {
           return "../static/icon/icon05.png";
           break;
