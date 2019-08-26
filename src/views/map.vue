@@ -46,7 +46,6 @@ export default {
     return {
       map: {},
       isClickInfo: false,
-    
       tableData: [],
       tmpBtn: "", //上次查看便签分类
       InfoWindow: null,
@@ -83,7 +82,10 @@ export default {
   },
   mounted() {
     this.newMap();
+
+
   },
+
   methods: {
     //远程搜索  默认全局搜索
     async searchFn(value) {
@@ -128,8 +130,9 @@ export default {
         _InfoWindow.close();
       }
       // 清除海量点
-      if (value === this.tmpBtn) return;
+      if (value === this.tmpBtn) return; 
       this.tmpBtn = value;
+    
       this.map.setZoom(12);
        _MoreMass._clear();
       if (value === "all") {

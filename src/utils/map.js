@@ -155,7 +155,7 @@ export class _MoreMass {
     }
     // //清空海量点
   static  _clear() {
-    
+        console.log("执行能否了")
         _MoreMass.massLocal.clear()
 
     }
