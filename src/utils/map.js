@@ -100,8 +100,10 @@ export class _MoreMass {
     }
     //绑定地图实例
     create() {
-        // this.addControl(this.map)
-        this.stateLite(this.map)
+        // 添加控件
+        // new _AddControl().add();
+        //  设置卫星地图
+        // this.stateLite(this.map)
         let mass = this.mass();
         let marker = this.maker()
         // console.log(marker, '测试')
@@ -282,4 +284,39 @@ export class _InfoWindow {
         _InfoWindow.infoBody.close()
     }
 
+}
+
+// 添加控件
+
+export class _AddControl {
+    constructor(map) {
+        this.map = map;
+    }
+
+    add() {
+        let map = this.map;
+        AMapUI.loadUI(["control/BasicControl"], function (BasicControl) {
+            //添加一个缩放控件
+            map.addControl(
+                new BasicControl.Zoom({
+                    position: "lt"
+                })
+            );
+
+            //缩放控件，显示Zoom值
+            map.addControl(
+                new BasicControl.Zoom({
+                    position: "lb",
+                    showZoomNum: true
+                })
+            );
+
+            //图层切换控件
+            map.addControl(
+                new BasicControl.LayerSwitcher({
+                    position: "rt"
+                })
+            );
+        });
+    }
 }
