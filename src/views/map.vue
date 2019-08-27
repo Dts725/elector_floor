@@ -257,7 +257,7 @@ export default {
       this.map = new AMap.Map("container", {
         zoom: 12,
         touchZoom: true,
-        rotateEnable: true,
+        expandZoomRange: true,
         center: [121.398773, 31.030892],
         resizeEnable: true,
         mapStyle: "amap://styles/8804968b584dd7b545f9b6f945c9ee84"

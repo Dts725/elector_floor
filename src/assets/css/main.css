@@ -13,18 +13,20 @@ s {
   border: none;
   box-sizing: border-box;
 }
-/* 
+
 @font-face {
-    font-family: 'ali';
-    src: url("../font/Alibaba-PuHuiTi-Medium.ttf")
-} */
+  font-family: 'ali';
+  src: url("../font/Alibaba-PuHuiTi-Medium.ttf")
+}
 
 .color-icon {
   color: #d7221a;
   font-size: 25px;
   font-weight: 700;
 }
-.el-table td, .el-table th {
+
+.el-table td,
+.el-table th {
   padding: 8px 0;
   min-width: 0;
   -webkit-box-sizing: border-box;
@@ -55,8 +57,7 @@ s {
   font-family: "iconfont";
   /* project id 1365166 */
   src: url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.eot");
-  src: url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.eot?#iefix")
-      format("embedded-opentype"),
+  src: url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.eot?#iefix") format("embedded-opentype"),
     url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.woff2") format("woff2"),
     url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.woff") format("woff"),
     url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.ttf") format("truetype"),
@@ -64,7 +65,10 @@ s {
 }
 
 html {
-  font-family: "iconfont", Helvetica, Arial, sans-serif;
+  font-family: "ali", "iconfont",
+    Helvetica,
+    Arial,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

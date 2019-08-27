@@ -117,7 +117,7 @@ export class _MoreMass {
         // 关闭信息框
 
         mass.setMap(this.map)
-        // this._clear();
+        this._clear();
         let map = this.map;
         // this.map.remove(this.map.getLayers.slice(1))
 
