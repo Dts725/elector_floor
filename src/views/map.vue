@@ -262,7 +262,9 @@ export default {
         resizeEnable: true,
         mapStyle: "amap://styles/8804968b584dd7b545f9b6f945c9ee84"
       });
-      new _AddControl(this.map).add();
+      this.map.on("complete", el => {
+        new _AddControl(this.map).add();
+      });
     },
 
     //根据头部筛选变换
