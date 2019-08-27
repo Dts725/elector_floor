@@ -87,41 +87,49 @@ export const _MapStyle = [
 // 创建海量点
 
 export class _MoreMass {
-    static massLocal = null
+
+
     constructor({
         data,
         map,
         style,
-    
+
 
     }) {
 
         this.data = data
         this.map = map
         this.style = style
-      
+
     }
     //绑定地图实例
     create() {
-     
+
         //  设置卫星地图
         // this.stateLite(this.map)
-        // let mass = 
-        _MoreMass.massLocal = this.mass();
+        //清除地图标注信息窗
+        this.map.clearInfoWindow();
+
+        let mass = this.mass();
+
 
         let marker = this.maker()
         // 关闭信息框
 
-        _MoreMass.massLocal.setMap(this.map)
-        _MoreMass.massLocal.on('mouseover', function (e) {
-      
+        mass.setMap(this.map)
+        this._clear();
+        let map = this.map;
+        // this.map.remove(this.map.getLayers.slice(1))
+
+        mass.on('mouseover', function (e) {
+            map.clearInfoWindow();
 
             marker.setPosition(e.data.lnglat);
             marker.setLabel({
                 content: e.data.name
             })
         });
-        _MoreMass.massLocal.on('mouseout', function (e) {
+        mass.on('mouseout', function (e) {
 
             marker.setPosition(e.data.lnglat);
             marker.setLabel({
@@ -129,7 +137,7 @@ export class _MoreMass {
             })
         });
         //此处返回 保证全局只有一个map   实例
-        return _MoreMass.massLocal
+        return mass
 
     }
     //海量点实例化
@@ -154,9 +162,23 @@ export class _MoreMass {
         });
     }
     // //清空海量点
-  static  _clear() {
-        console.log("执行能否了")
-        _MoreMass.massLocal.clear()
+    _clear() {
+        let map = this.map;
+        let layer = map.getLayers()
+
+        let tmpArray = "";
+        if (layer.length > 1) {
+            tmpArray = layer.map(el => {
+                if (el.CLASS_NAME === 'AMap.MassMarks') {
+                    return el;
+                } else {
+                    return false
+                }
+            })
+
+        }
+        tmpArray = tmpArray.filter(d => d);
+        map.remove(tmpArray.slice(0, tmpArray.length - 1))
 
     }
 
@@ -298,16 +320,16 @@ export class _AddControl {
         let map = this.map;
         AMapUI.loadUI(["control/BasicControl"], function (BasicControl) {
             //添加一个缩放控件
-            map.addControl(
-                new BasicControl.Zoom({
-                    position: "lt"
-                })
-            );
+            // map.addControl(
+            //     new BasicControl.Zoom({
+            //         position: "lt"
+            //     })
+            // );
 
             //缩放控件，显示Zoom值
             map.addControl(
                 new BasicControl.Zoom({
-                    position: "lb",
+                    position: "rb",
                     showZoomNum: true
                 })
             );
@@ -315,7 +337,7 @@ export class _AddControl {
             //图层切换控件
             map.addControl(
                 new BasicControl.LayerSwitcher({
-                    position: "rt"
+                    position: "rb"
                 })
             );
         });

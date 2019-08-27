@@ -8,7 +8,10 @@
     </div>
 
     <!-- 列表展示 -->
-    <div class="list" :style="{height: bodyHeight + 'px'}">
+    <div
+      class="list"
+      :style="{height: bodyHeight + 'px'}"
+    >
       <list
         ref="listTable"
         :tableData="tableData"
@@ -45,7 +48,6 @@ export default {
   data() {
     return {
       map: {},
-      isClickInfo: false,
       tableData: [],
       tmpBtn: "", //上次查看便签分类
       InfoWindow: null,
@@ -82,8 +84,6 @@ export default {
   },
   mounted() {
     this.newMap();
-
-
   },
 
   methods: {
@@ -92,7 +92,6 @@ export default {
       this.pam.search_key = value;
       this.$refs.listTable.$emit("clearValue");
 
-       _MoreMass._clear();
       await this.getTableData(this.pam);
       this.pam.search_key = "";
 
@@ -101,11 +100,8 @@ export default {
 
     //点击设置地图中心点二
     async setCenter(lnglat, address, flag) {
-      this.isClickInfo = true;
       // 注册关闭信息窗
-      _MoreMass.massLocal.on("mouseover", function() {
-        _InfoWindow.close();
-      });
+
       let lngLats = "";
       if (flag) {
         lngLats = await new _ConvertFrom().translate(lnglat);
@@ -126,15 +122,10 @@ export default {
 
     //列表按钮 地图跟随转换
     async btnTable(value) {
-      if (this.isClickInfo) {
-        _InfoWindow.close();
-      }
       // 清除海量点
-      if (value === this.tmpBtn) return; 
+      if (value === this.tmpBtn) return;
       this.tmpBtn = value;
-    
       this.map.setZoom(12);
-       _MoreMass._clear();
       if (value === "all") {
         this.pam.elevator_situation = "";
         await this.getTableData(this.pam);
@@ -160,7 +151,7 @@ export default {
     async morePoint(tmpData, map, style) {
       let data = await this.dataInt(tmpData);
 
-     new _MoreMass({ data, map, style }).create();
+      new _MoreMass({ data, map, style }).create();
     },
 
     //加载全部海量点
@@ -248,6 +239,7 @@ export default {
       console.log("地图实例化");
       this.map = new AMap.Map("container", {
         zoom: 12,
+        rotateEnable: true,
         center: [121.398773, 31.030892],
         resizeEnable: true,
         mapStyle: "amap://styles/8804968b584dd7b545f9b6f945c9ee84"
@@ -257,12 +249,11 @@ export default {
 
     //根据头部筛选变换
 
-    // 开发隐藏需求 有需要改变配置即可
     async tableTarget() {
       this.pam.community_id = this.community_id;
       this.pam.community_block_id = this.community_block_id;
       await this.getTableData(this.pam);
-       _MoreMass._clear();
+
       await this.getDataAll();
       this.morePointAll(this.dataAll, this.map, _MapStyle);
     },
