@@ -40,6 +40,7 @@ import { mapState, mapGetters } from "vuex";
 
 import list from "../components/list";
 import btnList from "../components/btnList";
+import { Promise } from "q";
 export default {
   components: {
     list,
@@ -130,6 +131,7 @@ export default {
         this.pam.elevator_situation = "";
         await this.getTableData(this.pam);
         await this.getDataAll();
+
         this.morePointAll(this.dataAll, this.map, _MapStyle);
       } else {
         this.pam.elevator_situation = value;
@@ -149,16 +151,24 @@ export default {
 
     //海量点局部加载
     async morePoint(tmpData, map, style) {
-      let data = await this.dataInt(tmpData);
+      try {
+        let data = await this.dataInt(tmpData);
 
-      new _MoreMass({ data, map, style }).create();
+        new _MoreMass({ data, map, style }).create();
+      } catch (err) {
+        console.log(err);
+      }
     },
 
     //加载全部海量点
     async morePointAll(tmpData, map, style) {
-      let data = await this.dataInt(tmpData);
+      try {
+        let data = await this.dataInt(tmpData);
 
-      await new _MoreMass({ data, map, style }).create();
+        await new _MoreMass({ data, map, style }).create();
+      } catch (error) {
+        console.log(error);
+      }
     },
     //获取所有数据
     async getDataAll() {
@@ -182,63 +192,71 @@ export default {
 
     //数据格式处理
     async dataInt(data) {
-      return Promise.all(
-        data.map(async (el, index, array) => {
-          let lnglat = "",
-            styleIndex = 0;
+      let arr = data.map(async (el, index, array) => {
+        let lnglat = "",
+          styleIndex = 0;
 
-          if (el.building_east_longitude && el.building_north_latitude) {
-            lnglat = await new _ConvertFrom().translate([
-              el.building_east_longitude,
-              el.building_north_latitude
-            ]);
-          } else {
+        if (el.building_east_longitude && el.building_north_latitude) {
+          lnglat = await new _ConvertFrom().translate([
+            el.building_east_longitude,
+            el.building_north_latitude
+          ]);
+        } else {
+          try {
             let res = await _ConvertFrom.geocoder(el.building_address);
             lnglat = [res[0].location.lng, res[0].location.lat];
+          } catch (error) {
+            console.log(error);
+          }
+          // let res = await _ConvertFrom.geocoder(el.building_address);
+        }
+        // console.time(el.building_address);
+
+        // 状态 elevator_situation 映射 图片
+        switch (el.elevator_situation) {
+          case 1: {
+            styleIndex = 1;
+            break;
+          }
+          case 3: {
+            styleIndex = 2;
+            break;
+          }
+          case 4: {
+            styleIndex = 3;
+            break;
+          }
+          case 5: {
+            styleIndex = 0;
+            break;
+          }
+          case 7: {
+            styleIndex = 4;
+            break;
           }
 
-          // 状态 elevator_situation 映射 图片
-          switch (el.elevator_situation) {
-            case 1: {
-              styleIndex = 1;
-              break;
-            }
-            case 3: {
-              styleIndex = 2;
-              break;
-            }
-            case 4: {
-              styleIndex = 3;
-              break;
-            }
-            case 5: {
-              styleIndex = 0;
-              break;
-            }
-            case 7: {
-              styleIndex = 4;
-              break;
-            }
-
-            default: {
-              styleIndex = 4;
-              break;
-            }
+          default: {
+            styleIndex = 4;
+            break;
           }
+        }
+        // console.timeEnd(el.building_address);
 
-          return {
-            lnglat: lnglat,
-            name: el.building_address,
-            id: index,
-            style: styleIndex
-          };
-        })
-      );
+        return {
+          lnglat: lnglat,
+          name: el.building_address,
+          id: index,
+          style: styleIndex
+        };
+      });
+
+      return Promise.all(arr);
     },
     newMap() {
       console.log("地图实例化");
       this.map = new AMap.Map("container", {
         zoom: 12,
+        touchZoom: true,
         rotateEnable: true,
         center: [121.398773, 31.030892],
         resizeEnable: true,

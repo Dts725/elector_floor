@@ -117,7 +117,7 @@ export class _MoreMass {
         // 关闭信息框
 
         mass.setMap(this.map)
-        this._clear();
+        // this._clear();
         let map = this.map;
         // this.map.remove(this.map.getLayers.slice(1))
 
@@ -145,7 +145,6 @@ export class _MoreMass {
         // 坐标转换
         // let lnglat = super.translate(this.data);
         let lnglat = this.data
-
         return new AMap.MassMarks(lnglat, {
             opacity: 0.8,
             zIndex: 111,
@@ -254,8 +253,8 @@ export class _ConvertFrom {
         return new Promise(resolve => {
             AMap.service("AMap.Geocoder", function () {
                 var geocoder = new AMap.Geocoder({
-                    radius: 1000,
-                    extensions: "all",
+                    radius: 3000,
+                    extensions: "base",
                     city: "021"
                 });
                 geocoder.getLocation(address, function (status, result) {
@@ -274,7 +273,7 @@ export class _ConvertFrom {
 
 //标注信息框
 export class _InfoWindow {
-    static infoBody = null
+
     constructor({
         position = "middle-left",
         address,
@@ -297,15 +296,11 @@ export class _InfoWindow {
         });
     }
     open() {
-        _InfoWindow.infoBody = this.infoWindow();
-        return _InfoWindow.infoBody.open(this.map, this.lnglat);
+        let infoBody = this.infoWindow();
+        return infoBody.open(this.map, this.lnglat);
     }
 
-    //打开的实体
-    static close() {
 
-        _InfoWindow.infoBody.close()
-    }
 
 }
 
