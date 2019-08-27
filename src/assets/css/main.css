@@ -65,7 +65,7 @@ s {
 }
 
 html {
-  font: "Helvetica Neue",
+  font: 100% "iconfont", "Helvetica Neue",
     Helvetica,
     Arial,
     "Microsoft Yahei",
