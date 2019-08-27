@@ -14,10 +14,10 @@ s {
   box-sizing: border-box;
 }
 
-@font-face {
+/* @font-face {
   font-family: 'ali';
   src: url("../font/Alibaba-PuHuiTi-Medium.ttf")
-}
+} */
 
 .color-icon {
   color: #d7221a;
@@ -65,10 +65,16 @@ s {
 }
 
 html {
-  font-family: "ali", "iconfont",
+  font: "Helvetica Neue",
     Helvetica,
     Arial,
+    "Microsoft Yahei",
+    "Hiragino Sans GB",
+    "Heiti SC",
+    "WenQuanYi Micro Hei",
     sans-serif;
+
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
