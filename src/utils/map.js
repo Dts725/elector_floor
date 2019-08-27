@@ -329,7 +329,10 @@ export class _AddControl {
             //缩放控件，显示Zoom值
             map.addControl(
                 new BasicControl.Zoom({
-                    position: "rb",
+                    position: {
+                        bottom: '80px',
+                        right: '22px'
+                    },
                     showZoomNum: true
                 })
             );
@@ -337,7 +340,10 @@ export class _AddControl {
             //图层切换控件
             map.addControl(
                 new BasicControl.LayerSwitcher({
-                    position: "rb"
+                    position: {
+                        bottom: '20px',
+                        right: '20px'
+                    },
                 })
             );
         });
