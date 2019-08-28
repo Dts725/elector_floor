@@ -99,6 +99,10 @@ body {
   font-size: 1.5rem;
 }
 
+.fz-05rem {
+  font-size: 0.5rem;
+}
+
 .fz-20rem {
   font-size: 2rem;
 }

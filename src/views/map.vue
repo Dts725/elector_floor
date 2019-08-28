@@ -25,7 +25,10 @@
       ></list>
     </div>
     <!-- 统计访问量 -->
-    <div class="count"> <span id="busuanzi_container_site_pv">
+    <div class="count"> <span
+        class="fz-05rem"
+        id="busuanzi_container_site_pv"
+      >
         本站总访问量<span id="busuanzi_value_site_pv"></span>次
       </span></div>
   </div>
@@ -55,7 +58,7 @@ export default {
   data() {
     return {
       map: {},
-      zoom: 12,
+      zoom: 11,
       centerZoom: 18,
       tableData: [],
       tmpBtn: "", //上次查看便签分类
