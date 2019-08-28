@@ -110,7 +110,6 @@ export default {
       } else {
         lngLats = lnglat;
       }
-
       // 原型中带有方法
       new _InfoWindow({
         address: address,
@@ -124,6 +123,10 @@ export default {
 
     //列表按钮 地图跟随转换
     async btnTable(value) {
+
+      // 释放禁止点击
+      this.$store.commit('setClickTmpAddress',{clickTmpAddress :""})
+
       // 清除海量点
       if (value === this.tmpBtn) return;
       this.tmpBtn = value;

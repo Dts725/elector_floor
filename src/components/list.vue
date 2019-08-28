@@ -66,6 +66,7 @@
 </template>
 <script>
 import { _ConvertFrom } from "../utils/map.js";
+import {mapState} from "vuex"
 
 export default {
   props: {
@@ -92,13 +93,18 @@ export default {
     return {
       pageSize: 20,
       currentPage: 1,
-      clickTmp: "",
+    
       iptValue: "",
       tableTitle: [
         ["community_block_name", "小区"],
         ["building_address", "地址"]
       ]
     };
+  },
+  computed:{
+    ...mapState({
+      clickTmpAddress : state => state.clickTmpAddress
+    })
   },
   methods: {
     //清空输入
@@ -121,8 +127,11 @@ export default {
       // 阻止多次点击
       let flag = true;
       let lngLat = "";
-      if (row.id === this.clickTmp) return;
-      this.clickTmp = row.id;
+
+      // 禁止多次点击 切换btn 列表 关联
+      if (row.id === this.clickTmpAddress) return;
+      this.$store.commit('setClickTmpAddress',{clickTmpAddress : row.id})
+   
       if (!row.building_east_longitude || !row.building_north_latitude) {
         flag = false;
         let res = await _ConvertFrom.geocoder(row.building_address);

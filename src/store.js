@@ -10,9 +10,13 @@ export default new Vuex.Store({
     community_id: "", //居委
     community_block_id: "", //小区
     isIndependence: true, //社区小区是否关联 及 是否允许全局搜索小区 默认 关联不允许搜索
-    loginInfo: "" //
+    loginInfo: "", //
+    clickTmpAddress : "",
   },
   mutations: {
+    setClickTmpAddress (state,{clickTmpAddress} ) {
+      state.clickTmpAddress = clickTmpAddress
+    },
     setCommitte(state, {
       community_id
     }) {
