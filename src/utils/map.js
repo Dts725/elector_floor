@@ -117,7 +117,7 @@ export class _MoreMass {
         // 关闭信息框
 
         mass.setMap(this.map)
-        this._clear();
+        _MoreMass._clear(this.map);
         let map = this.map;
         // this.map.remove(this.map.getLayers.slice(1))
 
@@ -161,11 +161,13 @@ export class _MoreMass {
         });
     }
     // //清空海量点
-    _clear() {
-        let map = this.map;
+    static _clear(map, flag = false) {
+
         let layer = map.getLayers()
 
-        let tmpArray = "";
+        let tmpArray = [];
+
+
         if (layer.length > 1) {
             tmpArray = layer.map(el => {
                 if (el.CLASS_NAME === 'AMap.MassMarks') {
@@ -177,8 +179,17 @@ export class _MoreMass {
 
         }
         tmpArray = tmpArray.filter(d => d);
-        map.remove(tmpArray.slice(0, tmpArray.length - 1))
-        console.log(map.getLayers(), "图层")
+
+        if (flag) {
+            map.remove(tmpArray);
+
+        } else {
+            map.remove(tmpArray.slice(0, tmpArray.length - 1))
+
+        }
+        // console.log(map.getLayers(), "图层")
+
+
 
     }
 

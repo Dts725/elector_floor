@@ -58,6 +58,7 @@ export default {
   data() {
     return {
       map: {},
+      massMap: "1", //海量点图层
       zoom: 11,
       centerZoom: 18,
       tableData: [],
@@ -165,7 +166,12 @@ export default {
     async morePoint(tmpData, map, style) {
       try {
         let data = await this.dataInt(tmpData);
-        if (!data.length) return;
+        if (!data.length) {
+          // 数据为空情况下 清除图层清除infoWindow
+          _MoreMass._clear(this.map, true);
+          this.map.clearInfoWindow();
+          return;
+        }
         new _MoreMass({ data, map, style }).create();
       } catch (err) {
         console.log(err);
@@ -176,7 +182,13 @@ export default {
     async morePointAll(tmpData, map, style) {
       try {
         let data = await this.dataInt(tmpData);
-        if (!data.length) return;
+        if (!data.length) {
+          // 数据为空情况下 清除图层清除infoWindow
+          _MoreMass._clear(this.map, true);
+          this.map.clearInfoWindow();
+
+          return;
+        }
         await new _MoreMass({ data, map, style }).create();
       } catch (error) {
         console.log(error);
