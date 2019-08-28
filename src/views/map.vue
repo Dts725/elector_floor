@@ -1,7 +1,9 @@
 <template>
   <div class="h100 flex-between">
     <!-- 地图 -->
-    <div id="container"></div>
+    <div id="container">
+
+    </div>
     <!-- 菜单按钮 -->
     <div class="btn-list">
       <btn-list @emitParent="btnTable"></btn-list>
@@ -22,6 +24,10 @@
         @searchFn="searchFn"
       ></list>
     </div>
+    <!-- 统计访问量 -->
+    <div class="count"> <span id="busuanzi_container_site_pv">
+        本站总访问量<span id="busuanzi_value_site_pv"></span>次
+      </span></div>
   </div>
 </template>
 
@@ -123,9 +129,8 @@ export default {
 
     //列表按钮 地图跟随转换
     async btnTable(value) {
-
       // 释放禁止点击
-      this.$store.commit('setClickTmpAddress',{clickTmpAddress :""})
+      this.$store.commit("setClickTmpAddress", { clickTmpAddress: "" });
 
       // 清除海量点
       if (value === this.tmpBtn) return;
@@ -345,5 +350,21 @@ export default {
 .btn-list {
   position: absolute;
   right: 20%;
+}
+.count {
+  position: fixed;
+  bottom: 20px;
+  right: 23%;
+  z-index: 1000;
+  color: #666;
+  -moz-user-select: none;
+  -o-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.6;
 }
 </style>

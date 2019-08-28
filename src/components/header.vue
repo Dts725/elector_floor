@@ -22,7 +22,9 @@
       <el-col
         :span="12"
         class="fz-20rem co-f9c"
-      >江川路街道加装电梯点位分布图</el-col>
+      >江川路街道加装电梯点位分布图
+
+      </el-col>
       <el-col :span="4">
 
       </el-col>
