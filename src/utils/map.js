@@ -178,6 +178,7 @@ export class _MoreMass {
         }
         tmpArray = tmpArray.filter(d => d);
         map.remove(tmpArray.slice(0, tmpArray.length - 1))
+        console.log(map.getLayers(), "图层")
 
     }
 
