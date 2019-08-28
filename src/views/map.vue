@@ -357,7 +357,7 @@ export default {
 .count {
   position: fixed;
   bottom: 20px;
-  right: 23%;
+  right: 26%;
   z-index: 1000;
   color: #666;
   -moz-user-select: none;
