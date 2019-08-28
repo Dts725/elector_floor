@@ -65,7 +65,7 @@ s {
 }
 
 html {
-  font: 100% "iconfont", "Helvetica Neue",
+  font: 14px/1.5 "iconfont", "Helvetica Neue",
     Helvetica,
     Arial,
     "Microsoft Yahei",
@@ -79,7 +79,7 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  font-size: 15px;
+
   height: 100%;
 }
 
