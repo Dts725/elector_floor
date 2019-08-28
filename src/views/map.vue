@@ -91,6 +91,7 @@ export default {
       bodyHeight: "bodyHeight"
     })
   },
+
   created() {
     this.int();
   },
@@ -99,6 +100,8 @@ export default {
   },
 
   methods: {
+    //加载统计插件
+
     //远程搜索  默认全局搜索
     async searchFn(value) {
       this.pam.search_key = value;

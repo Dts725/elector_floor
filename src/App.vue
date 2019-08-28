@@ -14,6 +14,13 @@ export default {
   data() {
     return {};
   },
+  beforeCreate() {
+    // 加载插件
+    const s = document.createElement("script");
+    s.type = "text/javascript";
+    s.src = "//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
+    document.body.appendChild(s);
+  },
   created() {
     let clientHeight = window.document.body.clientHeight;
     this.$store.commit("setLoginInfo", {
