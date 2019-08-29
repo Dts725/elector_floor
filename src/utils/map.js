@@ -115,7 +115,6 @@ export class _MoreMass {
 
         let marker = this.maker()
         // 关闭信息框
-
         mass.setMap(this.map)
         _MoreMass._clear(this.map);
         let map = this.map;

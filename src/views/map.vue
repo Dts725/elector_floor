@@ -59,12 +59,13 @@ export default {
     return {
       map: {},
       massMap: "1", //海量点图层
-      zoom: 11,
+      zoom: 17,
       centerZoom: 18,
       tableData: [],
       tmpBtn: "", //上次查看便签分类
       InfoWindow: null,
       data: "",
+      centePointer : [121.424922, 31.041136],
       total: 0,
       dataAll: "", //所有地图数据列表
       pam: {
@@ -142,7 +143,8 @@ export default {
       // 清除海量点
       if (value === this.tmpBtn) return;
       this.tmpBtn = value;
-      this.map.setZoom(this.zoom);
+    
+      
       if (value === "all") {
         this.pam.elevator_situation = "";
         await this.getTableData(this.pam);
@@ -186,12 +188,19 @@ export default {
       try {
         let data = await this.dataInt(tmpData);
         if (!data.length) {
+          //空数据恢复为整个上海市中心点
+      this.map.setZoomAndCenter(11,this.centePointer);
+
           // 数据为空情况下 清除图层清除infoWindow
           _MoreMass._clear(this.map, true);
           this.map.clearInfoWindow();
+          
 
           return;
         }
+      
+      this.map.setZoomAndCenter(this.zoom, data[1].lnglat);
+        
         await new _MoreMass({ data, map, style }).create();
       } catch (error) {
         console.log(error);
@@ -282,10 +291,10 @@ export default {
     newMap() {
       console.log("地图实例化");
       this.map = new AMap.Map("container", {
-        zoom: this.zoom,
+     
         touchZoom: true,
         expandZoomRange: true,
-        center: [121.424922, 31.041136],
+        center: this.centePointer,
         resizeEnable: true,
         mapStyle: "amap://styles/8804968b584dd7b545f9b6f945c9ee84"
       });

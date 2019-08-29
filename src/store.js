@@ -11,9 +11,21 @@ export default new Vuex.Store({
     community_block_id: "", //小区
     isIndependence: true, //社区小区是否关联 及 是否允许全局搜索小区 默认 关联不允许搜索
     loginInfo: "", //
-    clickTmpAddress : "",
+    clickTmpAddress: "",
+    allPointer: {  //本地缓存所有点位数据
+      all: [],//所有状态
+      installAble: [],//可安装
+      installAbleFuture: [],//可创造条件安装
+      signIng: [],//已签约
+      abuilding: [], //施工中
+      pay :[],//以交付
+    }
   },
   mutations: {
+
+    setAllPointer(state,{ status ,dataArray }) {
+      state.setAllPointer[status] = dataArray; 
+    },
     setClickTmpAddress (state,{clickTmpAddress} ) {
       state.clickTmpAddress = clickTmpAddress
     },
