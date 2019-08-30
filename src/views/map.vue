@@ -194,12 +194,13 @@ export default {
           // 数据为空情况下 清除图层清除infoWindow
           _MoreMass._clear(this.map, true);
           this.map.clearInfoWindow();
-          
+
 
           return;
         }
-      
-      this.map.setZoomAndCenter(this.zoom, data[1].lnglat);
+        console.log(this.map.getAllOverlays("MassMarks"))
+      // this.map.setZoomAndCenter(this.zoom, data[1].lnglat);
+
         
         await new _MoreMass({ data, map, style }).create();
       } catch (error) {
