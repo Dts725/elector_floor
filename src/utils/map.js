@@ -78,18 +78,18 @@ export class _MoreMass {
   }
   //绑定地图实例
   create() {
-    //  设置卫星地图
-    // this.stateLite(this.map)
-    //清除地图标注信息窗
+
     this.map.clearInfoWindow();
 
     let mass = this.mass();
 
     let marker = this.maker();
+
     // 关闭信息框
     mass.setMap(this.map);
 
     _MoreMass._clear(this.map);
+
     let map = this.map;
     //  自适应视野
     this.setViewCenter();
@@ -108,6 +108,8 @@ export class _MoreMass {
         content: ""
       });
     });
+   
+
     //此处返回 保证全局只有一个map   实例
     return mass;
   }

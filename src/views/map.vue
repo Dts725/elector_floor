@@ -186,7 +186,10 @@ export default {
     //加载全部海量点
     async morePointAll(tmpData, map, style) {
       try {
+        console.time("海量点渲染")
         let data = await this.dataInt(tmpData);
+        console.timeEnd("海量点渲染") 
+
         if (!data.length) {
           //空数据恢复为整个上海市中心点
       this.map.setZoomAndCenter(11,this.centePointer);
@@ -194,15 +197,17 @@ export default {
           // 数据为空情况下 清除图层清除infoWindow
           _MoreMass._clear(this.map, true);
           this.map.clearInfoWindow();
-          return;
-        }
-        // console.log(this.map.getAllOverlays("MassMarks"))
-        // this.map.setFitView();
-      // this.map.setZoomAndCenter(this.zoom, data[1].lnglat);
+    
 
+       
+        } else {
         
         await new _MoreMass({ data, map, style }).create();
-      
+     
+        }
+    
+
+
 
       } catch (error) {
         console.log(error);
@@ -235,17 +240,24 @@ export default {
           styleIndex = 0;
 
         if (el.building_east_longitude && el.building_north_latitude) {
-          lnglat = await new _ConvertFrom().translate([
+        console.time("经纬度转换"+index)
+        lnglat = await new _ConvertFrom().translate([
             el.building_east_longitude,
             el.building_north_latitude
           ]);
+        console.timeEnd("经纬度转换"+index)
+
         } else {
+      console.time( "地址解析"+el.building_address)
+
           try {
             let res = await _ConvertFrom.geocoder(el.building_address);
             lnglat = [res[0].location.lng, res[0].location.lat];
           } catch (error) {
             console.log(error);
           }
+      console.timeEnd("地址解析"+el.building_address)
+
           // let res = await _ConvertFrom.geocoder(el.building_address);
         }
         // console.time(el.building_address);
