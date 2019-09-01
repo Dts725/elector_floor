@@ -194,15 +194,16 @@ export default {
           // 数据为空情况下 清除图层清除infoWindow
           _MoreMass._clear(this.map, true);
           this.map.clearInfoWindow();
-
-
           return;
         }
-        console.log(this.map.getAllOverlays("MassMarks"))
+        // console.log(this.map.getAllOverlays("MassMarks"))
+        // this.map.setFitView();
       // this.map.setZoomAndCenter(this.zoom, data[1].lnglat);
 
         
         await new _MoreMass({ data, map, style }).create();
+      
+
       } catch (error) {
         console.log(error);
       }
@@ -303,8 +304,7 @@ export default {
         console.log("地图加载完成");
         new _AddControl(this.map).add();
 
-        // this.map.setMapStyle("amap://styles/8804968b584dd7b545f9b6f945c9ee84");
-        // this.map.setMapStyle("amap://styles/b07a600ae648c44c5f90da9f8f935b48");
+      
       });
     },
 
