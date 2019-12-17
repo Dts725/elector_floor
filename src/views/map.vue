@@ -1,19 +1,14 @@
 <template>
   <div class="h100 flex-between">
     <!-- 地图 -->
-    <div id="container">
-
-    </div>
+    <div id="container"></div>
     <!-- 菜单按钮 -->
     <div class="btn-list">
       <btn-list @emitParent="btnTable"></btn-list>
     </div>
 
     <!-- 列表展示 -->
-    <div
-      class="list"
-      :style="{height: bodyHeight + 'px'}"
-    >
+    <div class="list" :style="{height: bodyHeight + 'px'}">
       <list
         ref="listTable"
         :tableData="tableData"
@@ -25,16 +20,17 @@
       ></list>
     </div>
     <!-- 统计访问量 -->
-    <div class="count"> <span
-        class="fz-05rem"
-        id="busuanzi_container_site_pv"
-      >
-        本站总访问量<span id="busuanzi_value_site_pv"></span>次
-      </span></div>
+    <div class="count">
+      <span class="fz-05rem" id="busuanzi_container_site_pv">
+        本站总访问量
+        <span id="busuanzi_value_site_pv"></span>次
+      </span>
+    </div>
   </div>
 </template>
 
 <script>
+const addressCache = new Map();
 import {
   _AddIcon,
   _Maker,
@@ -65,7 +61,7 @@ export default {
       tmpBtn: "", //上次查看便签分类
       InfoWindow: null,
       data: "",
-      centePointer : [121.424922, 31.041136],
+      centePointer: [121.424922, 31.041136],
       total: 0,
       dataAll: "", //所有地图数据列表
       pam: {
@@ -143,8 +139,7 @@ export default {
       // 清除海量点
       if (value === this.tmpBtn) return;
       this.tmpBtn = value;
-    
-      
+
       if (value === "all") {
         this.pam.elevator_situation = "";
         await this.getTableData(this.pam);
@@ -186,29 +181,20 @@ export default {
     //加载全部海量点
     async morePointAll(tmpData, map, style) {
       try {
-        console.time("海量点渲染")
+        console.time("海量点渲染");
         let data = await this.dataInt(tmpData);
-        console.timeEnd("海量点渲染") 
+        console.timeEnd("海量点渲染");
 
         if (!data.length) {
           //空数据恢复为整个上海市中心点
-      this.map.setZoomAndCenter(11,this.centePointer);
+          this.map.setZoomAndCenter(11, this.centePointer);
 
           // 数据为空情况下 清除图层清除infoWindow
           _MoreMass._clear(this.map, true);
           this.map.clearInfoWindow();
-    
-
-       
         } else {
-        
-        await new _MoreMass({ data, map, style }).create();
-     
+          await new _MoreMass({ data, map, style }).create();
         }
-    
-
-
-
       } catch (error) {
         console.log(error);
       }
@@ -233,30 +219,50 @@ export default {
       };
     },
 
+    // 数据本地缓存
+
+    cacheLocaData(key, value=false) {
+      if (addressCache.get(key)) {
+        
+        return addressCache.get(key);
+      } else {
+        addressCache.set(key, value);
+        return false;
+      }
+    },
+
     //数据格式处理
     async dataInt(data) {
       let arr = data.map(async (el, index, array) => {
         let lnglat = "",
           styleIndex = 0;
-
+        let dataTmp = this.cacheLocaData(el.building_address);
         if (el.building_east_longitude && el.building_north_latitude) {
-        console.time("经纬度转换"+index)
-        lnglat = await new _ConvertFrom().translate([
-            el.building_east_longitude,
-            el.building_north_latitude
-          ]);
-        console.timeEnd("经纬度转换"+index)
+          //数据缓存
 
+          if (dataTmp) {
+            lnglat = dataTmp;
+          } else {
+            // 有百度经纬度
+            lnglat = await new _ConvertFrom().translate([
+              el.building_east_longitude,
+              el.building_north_latitude
+            ]);
+            this.cacheLocaData(el.building_address, lnglat);
+          }
         } else {
-      console.time( "地址解析"+el.building_address)
-
+          //直接地址解析
           try {
-            let res = await _ConvertFrom.geocoder(el.building_address);
-            lnglat = [res[0].location.lng, res[0].location.lat];
+            if (dataTmp) {
+              lnglat = dataTmp;
+            } else {
+              let res = await _ConvertFrom.geocoder(el.building_address);
+              lnglat = [res[0].location.lng, res[0].location.lat];
+              this.cacheLocaData(el.building_address, lnglat);
+            }
           } catch (error) {
             console.log(error);
           }
-      console.timeEnd("地址解析"+el.building_address)
 
           // let res = await _ConvertFrom.geocoder(el.building_address);
         }
@@ -305,7 +311,6 @@ export default {
     newMap() {
       console.log("地图实例化");
       this.map = new AMap.Map("container", {
-     
         touchZoom: true,
         expandZoomRange: true,
         center: this.centePointer,
@@ -315,8 +320,6 @@ export default {
       this.map.on("complete", el => {
         console.log("地图加载完成");
         new _AddControl(this.map).add();
-
-      
       });
     },
 
