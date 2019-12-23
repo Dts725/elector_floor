@@ -76,3 +76,15 @@ export function loginFn(pam, type) {
     }
 
 }
+
+// 数据缓存
+
+export function setCachePoint (pam,type='post') {
+    if (type === 'post') {
+        console.dir(pam)
+        return post('showscreen/elevator/upd_tmplocation', pam)
+    } else {
+        return get('showscreen/elevator/upd_tmplocation', pam)
+
+    }
+}

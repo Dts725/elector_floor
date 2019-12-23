@@ -30,7 +30,6 @@
 </template>
 
 <script>
-const addressCache = new Map();
 import {
   _AddIcon,
   _Maker,
@@ -40,7 +39,7 @@ import {
   _InfoWindow,
   _AddControl
 } from "../utils/map";
-import { getTableList } from "../api/api";
+import { getTableList, setCachePoint } from "../api/api";
 import { mapState, mapGetters } from "vuex";
 
 import list from "../components/list";
@@ -54,6 +53,9 @@ export default {
   data() {
     return {
       map: {},
+      addressCache: [],
+
+      _MapStyle: "",
       massMap: "1", //海量点图层
       zoom: 17,
       centerZoom: 18,
@@ -63,6 +65,7 @@ export default {
       data: "",
       centePointer: [121.424922, 31.041136],
       total: 0,
+     
       dataAll: "", //所有地图数据列表
       pam: {
         community_id: "",
@@ -90,12 +93,12 @@ export default {
   },
 
   created() {
+    this._MapStyle = _MapStyle();
     this.int();
   },
   mounted() {
     this.newMap();
   },
-
   methods: {
     //加载统计插件
 
@@ -107,7 +110,7 @@ export default {
       await this.getTableData(this.pam);
       this.pam.search_key = "";
 
-      this.morePoint(this.tableData, this.map, _MapStyle);
+      this.morePoint(this.tableData, this.map, this._MapStyle);
     },
 
     //点击设置地图中心点二
@@ -137,6 +140,7 @@ export default {
       this.$store.commit("setClickTmpAddress", { clickTmpAddress: "" });
 
       // 清除海量点
+    
       if (value === this.tmpBtn) return;
       this.tmpBtn = value;
 
@@ -145,12 +149,12 @@ export default {
         await this.getTableData(this.pam);
         await this.getDataAll();
 
-        this.morePointAll(this.dataAll, this.map, _MapStyle);
+        this.morePointAll(this.dataAll, this.map, this._MapStyle);
       } else {
         this.pam.elevator_situation = value;
         await this.getTableData(this.pam);
         await this.getDataAll();
-        this.morePointAll(this.dataAll, this.map, _MapStyle);
+        this.morePointAll(this.dataAll, this.map, this._MapStyle);
       }
     },
 
@@ -158,14 +162,16 @@ export default {
     async int() {
       await this.getTableData(this.pam);
       await this.getDataAll();
-      // this.morePoint(this.tableData, this.map, _MapStyle);
-      this.morePointAll(this.dataAll, this.map, _MapStyle);
+
+      this.morePointAll(this.dataAll, this.map, this._MapStyle);
     },
 
     //海量点局部加载
     async morePoint(tmpData, map, style) {
       try {
         let data = await this.dataInt(tmpData);
+        //设置缓存
+        this.setCache();
         if (!data.length) {
           // 数据为空情况下 清除图层清除infoWindow
           _MoreMass._clear(this.map, true);
@@ -179,11 +185,12 @@ export default {
     },
 
     //加载全部海量点
-    async morePointAll(tmpData, map, style) {
+    async morePointAll(tmpData, map, style, zoomFlag = false) {
+      console.time("海量点渲染");
       try {
-        console.time("海量点渲染");
         let data = await this.dataInt(tmpData);
-        console.timeEnd("海量点渲染");
+        this.setCache();
+        //设置缓存
 
         if (!data.length) {
           //空数据恢复为整个上海市中心点
@@ -193,11 +200,12 @@ export default {
           _MoreMass._clear(this.map, true);
           this.map.clearInfoWindow();
         } else {
-          await new _MoreMass({ data, map, style }).create();
+          await new _MoreMass({ data, map, style, zoomFlag }).create();
         }
       } catch (error) {
         console.log(error);
       }
+      console.timeEnd("海量点渲染");
     },
     //获取所有数据
     async getDataAll() {
@@ -205,6 +213,54 @@ export default {
       let res = await getTableList(this.pam);
       this.dataAll = res.data;
       //避免对后面造成影响
+    },
+
+    // 地图标点 Icon 绑定缩放事件
+   async  mapZoomend() {
+      let zoom = this.map.getZoom(); //获取当前地图级别
+      let height = 9.5,
+        width = 12.25;
+      switch (zoom) {
+        case 14: {
+          this._MapStyle = _MapStyle(height * 1, width * 1);
+
+          break;
+        }
+        case 15: {
+          this._MapStyle = _MapStyle(height * 1, width * 1);
+          break;
+        }
+        case 16: {
+          this._MapStyle = _MapStyle(height * 1.2, width * 1.2);
+          break;
+        }
+        case 17: {
+          this._MapStyle = _MapStyle(height * 1.8, width * 1.8);
+          break;
+        }
+        case 18: {
+          this._MapStyle = _MapStyle(height * 2.5, width * 2.5);
+
+          break;
+        }
+        default: {
+          this._MapStyle = _MapStyle(height * 1, width * 1);
+
+          break;
+        }
+      }
+     await this.morePointAll(this.dataAll, this.map, this._MapStyle, true);
+          // this._MapStyle = _MapStyle(height * 1, width * 1);
+      console.log("缩放结束", zoom);
+    },
+
+    //更新缓存
+
+    async setCache() {
+      if (this.addressCache.length) {
+        let pam = { locations: JSON.stringify(this.addressCache) };
+        setCachePoint(pam);
+      }
     },
 
     //参数初始化
@@ -221,14 +277,11 @@ export default {
 
     // 数据本地缓存
 
-    cacheLocaData(key, value=false) {
-      if (addressCache.get(key)) {
-        
-        return addressCache.get(key);
-      } else {
-        addressCache.set(key, value);
-        return false;
-      }
+    cacheLocaData(key, value) {
+      // console.log(key)
+
+      let data = { id: key, tmp_location: JSON.stringify(value) };
+      this.addressCache.push(data);
     },
 
     //数据格式处理
@@ -236,30 +289,25 @@ export default {
       let arr = data.map(async (el, index, array) => {
         let lnglat = "",
           styleIndex = 0;
-        let dataTmp = this.cacheLocaData(el.building_address);
-        if (el.building_east_longitude && el.building_north_latitude) {
+        let dataTmp = el.tmp_flag;
+
+        if (dataTmp === 2) {
+          lnglat = JSON.parse(el.tmp_location);
+        } else if (el.building_east_longitude && el.building_north_latitude) {
           //数据缓存
 
-          if (dataTmp) {
-            lnglat = dataTmp;
-          } else {
-            // 有百度经纬度
-            lnglat = await new _ConvertFrom().translate([
-              el.building_east_longitude,
-              el.building_north_latitude
-            ]);
-            this.cacheLocaData(el.building_address, lnglat);
-          }
+          // 有百度经纬度
+          lnglat = await new _ConvertFrom().translate([
+            el.building_east_longitude,
+            el.building_north_latitude
+          ]);
+          this.cacheLocaData(el.id, lnglat);
         } else {
           //直接地址解析
           try {
-            if (dataTmp) {
-              lnglat = dataTmp;
-            } else {
-              let res = await _ConvertFrom.geocoder(el.building_address);
-              lnglat = [res[0].location.lng, res[0].location.lat];
-              this.cacheLocaData(el.building_address, lnglat);
-            }
+            let res = await _ConvertFrom.geocoder(el.building_address);
+            lnglat = [res[0].location.lng, res[0].location.lat];
+            this.cacheLocaData(el.id, lnglat);
           } catch (error) {
             console.log(error);
           }
@@ -319,8 +367,12 @@ export default {
       });
       this.map.on("complete", el => {
         console.log("地图加载完成");
+
         new _AddControl(this.map).add();
       });
+      // this.map.on("zoomstart", this.mapZoomend);
+      // this.map.on("zoomchange", this.mapZoomend);
+      this.map.on("zoomend", this.mapZoomend);
     },
 
     //根据头部筛选变换
@@ -331,7 +383,7 @@ export default {
       await this.getTableData(this.pam);
 
       await this.getDataAll();
-      this.morePointAll(this.dataAll, this.map, _MapStyle);
+      this.morePointAll(this.dataAll, this.map, this._MapStyle);
     },
 
     //获取列表 |核心请求

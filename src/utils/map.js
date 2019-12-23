@@ -1,7 +1,7 @@
 const _ = require("lodash");
 
 export class _AddIcon {
-  constructor({ width = 38, height = 49, uri = "" }) {
+  constructor({ width = 19, height = 25, uri = "" }) {
     (this.uri = uri), (this.width = width), (this.height = height);
   }
   createIcorn() {
@@ -40,41 +40,45 @@ export class _Maker {
 }
 //海量点样式
 
-export const _MapStyle = [
-  {
-    url: require("../static/icon/icon_map01.png"),
-    anchor: new AMap.Pixel(38, 49),
-    size: new AMap.Size(38, 49)
-  },
-  {
-    url: require("../static/icon/icon_map02.png"),
-    anchor: new AMap.Pixel(38, 49),
-    size: new AMap.Size(38, 49)
-  },
-  {
-    url: require("../static/icon/icon_map03.png"),
-    anchor: new AMap.Pixel(38, 49),
-    size: new AMap.Size(38, 49)
-  },
-  {
-    url: require("../static/icon/icon_map04.png"),
-    anchor: new AMap.Pixel(38, 49),
-    size: new AMap.Size(38, 49)
-  },
-  {
-    url: require("../static/icon/icon_map05.png"),
-    anchor: new AMap.Pixel(38, 49),
-    size: new AMap.Size(38, 49)
-  }
-];
+export const _MapStyle = (height = 9.5, width = 12.25) => {
+
+  return [
+    {
+      url: require("../static/icon/icon_map01.png"),
+      anchor: new AMap.Pixel(height, width),
+      size: new AMap.Size(height, width)
+    },
+    {
+      url: require("../static/icon/icon_map02.png"),
+      anchor: new AMap.Pixel(height, width),
+      size: new AMap.Size(height, width)
+    },
+    {
+      url: require("../static/icon/icon_map03.png"),
+      anchor: new AMap.Pixel(height, width),
+      size: new AMap.Size(height, width)
+    },
+    {
+      url: require("../static/icon/icon_map04.png"),
+      anchor: new AMap.Pixel(height, width),
+      size: new AMap.Size(height, width)
+    },
+    {
+      url: require("../static/icon/icon_map05.png"),
+      anchor: new AMap.Pixel(height, width),
+      size: new AMap.Size(height, width)
+    }
+  ];
+}
 
 // 创建海量点
 
 export class _MoreMass {
-  constructor({ data, map, style }) {
+  constructor({ data, map, style, zoomFlag }) {
     this.data = data;
     this.map = map;
     this.style = style;
+    this.zoomFlag = zoomFlag
   }
   //绑定地图实例
   create() {
@@ -92,9 +96,12 @@ export class _MoreMass {
 
     let map = this.map;
     //  自适应视野
-    this.setViewCenter();
+    if (!this.zoomFlag) {
+      this.setViewCenter();
 
-    mass.on("mouseover", function(e) {
+    }
+
+    mass.on("mouseover", function (e) {
       map.clearInfoWindow();
 
       marker.setPosition(e.data.lnglat);
@@ -102,13 +109,13 @@ export class _MoreMass {
         content: e.data.name
       });
     });
-    mass.on("mouseout", function(e) {
+    mass.on("mouseout", function (e) {
       marker.setPosition(e.data.lnglat);
       marker.setLabel({
         content: ""
       });
     });
-   
+
 
     //此处返回 保证全局只有一个map   实例
     return mass;
@@ -174,7 +181,7 @@ export class _MoreMass {
 
   //添加地图插件
   addControl(map) {
-    AMap.plugin(["AMap.ToolBar", "AMap.MapType"], function() {
+    AMap.plugin(["AMap.ToolBar", "AMap.MapType"], function () {
       //异步同时加载多个插件
       let toolbar = new AMap.ToolBar({
         position: {
@@ -208,13 +215,13 @@ export class _ConvertFrom {
   // // 地址解析
   static geocoder(address) {
     return new Promise(resolve => {
-      AMap.service("AMap.Geocoder", function() {
+      AMap.service("AMap.Geocoder", function () {
         var geocoder = new AMap.Geocoder({
           radius: 3000,
           extensions: "base",
           city: "021"
         });
-        geocoder.getLocation(address, function(status, result) {
+        geocoder.getLocation(address, function (status, result) {
           if (status === "complete" && result.info === "OK") {
             resolve(result.geocodes);
           }
@@ -255,7 +262,7 @@ export class _AddControl {
 
   add() {
     let map = this.map;
-    AMapUI.loadUI(["control/BasicControl"], function(BasicControl) {
+    AMapUI.loadUI(["control/BasicControl"], function (BasicControl) {
       //添加一个缩放控件
       // map.addControl(
       //     new BasicControl.Zoom({
