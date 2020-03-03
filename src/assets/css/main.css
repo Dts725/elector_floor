@@ -1,12 +1,4 @@
-html,
-body,
-div,
-ul,
-li,
-dl,
-dt,
-dd,
-s {
+html, body, div, ul, li, dl, dt, dd, s {
   margin: 0;
   padding: 0;
   display: block;
@@ -25,8 +17,7 @@ s {
   font-weight: 700;
 }
 
-.el-table td,
-.el-table th {
+.el-table td, .el-table th {
   padding: 8px 0;
   min-width: 0;
   -webkit-box-sizing: border-box;
@@ -57,29 +48,15 @@ s {
   font-family: "iconfont";
   /* project id 1365166 */
   src: url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.eot");
-  src: url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.eot?#iefix") format("embedded-opentype"),
-    url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.woff2") format("woff2"),
-    url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.woff") format("woff"),
-    url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.ttf") format("truetype"),
-    url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.svg#iconfont") format("svg");
+  src: url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.eot?#iefix") format("embedded-opentype"), url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.woff2") format("woff2"), url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.woff") format("woff"), url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.ttf") format("truetype"), url("//at.alicdn.com/t/font_1365166_ckm47x0k0j.svg#iconfont") format("svg");
 }
 
 html {
-  font: 14px/1.5 "iconfont", "Helvetica Neue",
-    Helvetica,
-    Arial,
-    "Microsoft Yahei",
-    "Hiragino Sans GB",
-    "Heiti SC",
-    "WenQuanYi Micro Hei",
-    sans-serif;
-
-
+  font: 14px/1.5 "iconfont", "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-
   height: 100%;
 }
 
@@ -123,6 +100,10 @@ body {
   width: 100%;
 }
 
+.w45 {
+  width: 45%;
+}
+
 .h10 {
   height: 10%;
 }
@@ -152,4 +133,15 @@ body {
 
 .list .cell-tbody {
   text-align: center;
+}
+
+.w50 {
+  width: 50%;
+}
+
+.flex-evenly {
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+  align-items: center;
 }

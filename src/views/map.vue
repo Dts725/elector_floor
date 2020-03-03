@@ -1,5 +1,8 @@
 <template>
   <div class="h100 flex-between">
+    <div class="count-header" :style="{'top': topHeight + 'px'}">
+      <count-header ref="countHeader"></count-header>
+    </div>
     <!-- 地图 -->
     <div id="container"></div>
     <!-- 菜单按钮 -->
@@ -19,6 +22,7 @@
         @searchFn="searchFn"
       ></list>
     </div>
+
     <!-- 统计访问量 -->
     <div class="count">
       <span class="fz-05rem" id="busuanzi_container_site_pv">
@@ -45,10 +49,13 @@ import { mapState, mapGetters } from "vuex";
 import list from "../components/list";
 import btnList from "../components/btnList";
 import { Promise } from "q";
+import countHeader from "../components/count_header";
+
 export default {
   components: {
     list,
-    btnList
+    btnList,
+    countHeader
   },
   data() {
     return {
@@ -65,7 +72,7 @@ export default {
       data: "",
       centePointer: [121.424922, 31.041136],
       total: 0,
-     
+
       dataAll: "", //所有地图数据列表
       pam: {
         community_id: "",
@@ -83,6 +90,7 @@ export default {
   },
   computed: {
     ...mapState({
+      topHeight: state => state.topHeight,
       community_id: state => state.community_id,
       community_block_id: state => state.community_block_id,
       isIndependence: state => state.isIndependence
@@ -140,7 +148,7 @@ export default {
       this.$store.commit("setClickTmpAddress", { clickTmpAddress: "" });
 
       // 清除海量点
-    
+
       if (value === this.tmpBtn) return;
       this.tmpBtn = value;
 
@@ -216,7 +224,7 @@ export default {
     },
 
     // 地图标点 Icon 绑定缩放事件
-   async  mapZoomend() {
+    async mapZoomend() {
       let zoom = this.map.getZoom(); //获取当前地图级别
       let height = 9.5,
         width = 12.25;
@@ -249,8 +257,8 @@ export default {
           break;
         }
       }
-     await this.morePointAll(this.dataAll, this.map, this._MapStyle, true);
-          // this._MapStyle = _MapStyle(height * 1, width * 1);
+      await this.morePointAll(this.dataAll, this.map, this._MapStyle, true);
+      // this._MapStyle = _MapStyle(height * 1, width * 1);
       console.log("缩放结束", zoom);
     },
 
@@ -380,6 +388,8 @@ export default {
     async tableTarget() {
       this.pam.community_id = this.community_id;
       this.pam.community_block_id = this.community_block_id;
+      this.$refs.countHeader.$emit("getCount", this.pam);
+
       await this.getTableData(this.pam);
 
       await this.getDataAll();
@@ -461,5 +471,17 @@ export default {
   pointer-events: none;
   cursor: default;
   opacity: 0.6;
+}
+.count-header {
+  width: 76%;
+  position: absolute;
+  background-color: #fff;
+  left: 2%;
+  height: 3rem;
+  opacity: 0.85;
+  border-radius: 0 0 10px 10px;
+  padding: 2px 0;
+  z-index: 999;
+  box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.4);
 }
 </style>

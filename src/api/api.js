@@ -77,9 +77,15 @@ export function loginFn(pam, type) {
 
 }
 
+//访问统计结果
+export function getCount(pam) {
+    return get('showscreen/elevator/community_count_list', pam)
+}
+
+
 // 数据缓存
 
-export function setCachePoint (pam,type='post') {
+export function setCachePoint(pam, type = 'post') {
     if (type === 'post') {
         console.dir(pam)
         return post('showscreen/elevator/upd_tmplocation', pam)
